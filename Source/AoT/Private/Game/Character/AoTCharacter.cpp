@@ -5,6 +5,12 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "AbilitySystem/AoTAbilitySystemComponent.h"
+#include "Game/PlayerState/AoTPlayerState.h"
+#include "Data/Character/CharacterClassInfo.h"
+#include "Game/GameMode/AoTGameMode.h"
+#include "Kismet/GameplayStatics.h"
+#include "AbilitySystem/AoTAbilitySystemComponent.h"
 
 AAoTCharacter::AAoTCharacter()
 {
@@ -33,9 +39,49 @@ AAoTCharacter::AAoTCharacter()
 	FollowCamera->bUsePawnControlRotation = false;
 }
 
+UAbilitySystemComponent* AAoTCharacter::GetAbilitySystemComponent() const
+{
+	return AbilitySystemComponent;
+}
+
+void AAoTCharacter::PossessedBy(AController* NewController)
+{
+	Super::PossessedBy(NewController);
+	InitAbilityActorInfo();
+}
+
 void AAoTCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+}
+
+void AAoTCharacter::InitAbilityActorInfo()
+{
+	if (AAoTPlayerState* AoTPlayerState = GetPlayerState<AAoTPlayerState>())
+	{
+		AbilitySystemComponent = AoTPlayerState->GetAoTAbilitySystemComponent();
+		if (IsValid(AbilitySystemComponent))
+		{
+			AbilitySystemComponent->InitAbilityActorInfo(AoTPlayerState, this);
+			InitClassDefaults();
+
+		}
+	}
+}
+
+void AAoTCharacter::InitClassDefaults()
+{
+	if (AAoTGameMode* GasGameMode = Cast<AAoTGameMode>(UGameplayStatics::GetGameMode(this)))
+	{
+		if (UCharacterClassInfo* ClassInfo = GasGameMode->GetCharacterClassInfo())
+		{
+			if (FCharacterClassDefaultInfo* CharacterClassInfo = ClassInfo->ClassDefaultsInfo.Find(CharacterTag))
+			{
+				AbilitySystemComponent->AddCharacterAbilities(CharacterClassInfo->DefaultAbilities);
+				AbilitySystemComponent->InitDefaultAttributes(CharacterClassInfo->DefaultAttributes);
+			}
+		}
+	}
 }
 
 void AAoTCharacter::Tick(float DeltaTime)

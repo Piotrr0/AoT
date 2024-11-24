@@ -3,3 +3,7 @@
 
 #include "Game/GameMode/AoTGameMode.h"
 
+UCharacterClassInfo* AAoTGameMode::GetCharacterClassInfo()
+{
+	return ClassDefaults;
+}
