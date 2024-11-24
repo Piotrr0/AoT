@@ -11,6 +11,10 @@
 class USpringArmComponent;
 class UCameraComponent;
 class UAoTAbilitySystemComponent;
+class UInputMappingContext;
+class UInputAction;
+class UInputComponent;
+struct FInputActionValue;
 
 UCLASS()
 class AOT_API AAoTCharacter : public ACharacter, public IAbilitySystemInterface
@@ -28,9 +32,12 @@ protected:
 	void InitAbilityActorInfo();
 	void InitClassDefaults();
 
+	void Move(const FInputActionValue& Value);
+	void Look(const FInputActionValue& Value);
+
 public:	
 	virtual void Tick(float DeltaTime) override;
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 
 private:
 	
@@ -42,6 +49,16 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "PlayerTags", meta = (AllowPrivateAccess = true))
 	FGameplayTag CharacterTag;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = true))
+	TObjectPtr<UInputMappingContext> DefaultMappingContext;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = true))
+	TObjectPtr<UInputAction> MoveAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = true))
+	TObjectPtr<UInputAction> LookAction;
+
 
 public:
 	FORCEINLINE USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
