@@ -6,6 +6,8 @@
 #include "GameFramework/PlayerController.h"
 #include "AoTPlayerController.generated.h"
 
+class UInputMappingContext;
+
 /**
  * 
  */
@@ -13,5 +15,17 @@ UCLASS()
 class AOT_API AAoTPlayerController : public APlayerController
 {
 	GENERATED_BODY()
-	
+
+public:
+
+protected:
+
+	virtual void BeginPlay() override;
+	virtual void SetupInputComponent() override;
+
+private:
+
+	UPROPERTY(EditAnywhere, Category = "Input")
+	TObjectPtr<UInputMappingContext> AoTContext;
+
 };
