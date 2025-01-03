@@ -9,6 +9,7 @@
 
 class UAbilitySystemComponent;
 class UAttributeSet;
+class UGameplayEffect;
 
 UCLASS()
 class AOT_API AAoTCharacterBase : public ACharacter, public IAbilitySystemInterface
@@ -18,13 +19,21 @@ class AOT_API AAoTCharacterBase : public ACharacter, public IAbilitySystemInterf
 public:
 	AAoTCharacterBase();
 	UAbilitySystemComponent* GetAbilitySystemComponent() const override;
+	void InitDefaultAttributes() const;
 
 protected:
 	virtual void BeginPlay() override;
 	virtual void InitAbilityActorInfo();
+	void ApplyEffectToSelf(TSubclassOf<UGameplayEffect> Effect, float Level) const;
 
+	UPROPERTY()
 	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;
+
+	UPROPERTY()
 	TObjectPtr<UAttributeSet> AttributeSet;
+
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<UGameplayEffect> DefaultAttributes;
 
 private:
 
