@@ -13,5 +13,15 @@ UCLASS()
 class AOT_API AAoTCharacter : public AAoTCharacterBase
 {
 	GENERATED_BODY()
-	
+public:
+	AAoTCharacter();
+	virtual void PossessedBy(AController* NewController) override;
+
+protected:
+
+	void InitAbilityActorInfo() override;
+
+private:
+
+
 };

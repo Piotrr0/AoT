@@ -2,10 +2,16 @@
 
 
 #include "Character/AoTCharacterBase.h"
+#include "AbilitySystemComponent.h"
 
 AAoTCharacterBase::AAoTCharacterBase()
 {
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
+}
+
+UAbilitySystemComponent* AAoTCharacterBase::GetAbilitySystemComponent() const
+{
+	return AbilitySystemComponent;
 }
 
 void AAoTCharacterBase::BeginPlay()
@@ -13,7 +19,7 @@ void AAoTCharacterBase::BeginPlay()
 	Super::BeginPlay();
 }
 
-void AAoTCharacterBase::Tick(float DeltaTime)
+void AAoTCharacterBase::InitAbilityActorInfo()
 {
-	Super::Tick(DeltaTime);
+
 }
