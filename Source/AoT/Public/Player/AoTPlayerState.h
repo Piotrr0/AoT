@@ -8,6 +8,7 @@
 #include "AoTPlayerState.generated.h"
 
 class UAbilitySystemComponent;
+class UAttributeSet;
 
 /**
  * 
@@ -20,6 +21,7 @@ class AOT_API AAoTPlayerState : public APlayerState, public IAbilitySystemInterf
 public:
 	AAoTPlayerState();
 	UAbilitySystemComponent* GetAbilitySystemComponent() const override;
+	UAttributeSet* GetAttributeSet() const;
 
 protected:
 
@@ -27,5 +29,6 @@ protected:
 private:
 
 	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;
-	
+	TObjectPtr<UAttributeSet> AttributeSet;
+
 };

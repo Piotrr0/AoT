@@ -2,14 +2,21 @@
 
 
 #include "Player/AoTPlayerState.h"
-#include "AbilitySystemComponent.h"
+#include "AbilitySystem/AoTAbilitySystemComponent.h"
+#include "AbilitySystem/AoTAttributeSet.h"
 
 AAoTPlayerState::AAoTPlayerState()
 {
-	AbilitySystemComponent = CreateDefaultSubobject<UAbilitySystemComponent>(FName("AbilitySystemComponent"));
+	AbilitySystemComponent = CreateDefaultSubobject<UAoTAbilitySystemComponent>(FName("AbilitySystemComponent"));
+	AttributeSet = CreateDefaultSubobject<UAoTAttributeSet>(FName("AttributeSet"));
 }
 
 UAbilitySystemComponent* AAoTPlayerState::GetAbilitySystemComponent() const
 {
 	return AbilitySystemComponent;
+}
+
+UAttributeSet* AAoTPlayerState::GetAttributeSet() const
+{
+	return AttributeSet;
 }

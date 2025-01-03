@@ -8,6 +8,7 @@
 #include "AoTCharacterBase.generated.h"
 
 class UAbilitySystemComponent;
+class UAttributeSet;
 
 UCLASS()
 class AOT_API AAoTCharacterBase : public ACharacter, public IAbilitySystemInterface
@@ -23,6 +24,7 @@ protected:
 	virtual void InitAbilityActorInfo();
 
 	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;
+	TObjectPtr<UAttributeSet> AttributeSet;
 
 private:
 
