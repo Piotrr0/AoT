@@ -24,4 +24,5 @@ void AAoTCharacter::InitAbilityActorInfo()
 	AbilitySystemComponent = AoTPlayerState->GetAbilitySystemComponent();
 	AttributeSet = AoTPlayerState->GetAttributeSet();
 	InitDefaultAttributes();
+	InitDefaultAbilities();
 }

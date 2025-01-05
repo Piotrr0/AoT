@@ -2,7 +2,7 @@
 
 
 #include "Character/AoTCharacterBase.h"
-#include "AbilitySystemComponent.h"
+#include "AbilitySystem/AoTAbilitySystemComponent.h"
 
 AAoTCharacterBase::AAoTCharacterBase()
 {
@@ -17,6 +17,13 @@ UAbilitySystemComponent* AAoTCharacterBase::GetAbilitySystemComponent() const
 void AAoTCharacterBase::InitDefaultAttributes() const
 {
 	ApplyEffectToSelf(DefaultAttributes, 1.f);
+}
+
+void AAoTCharacterBase::InitDefaultAbilities() const
+{
+	UAoTAbilitySystemComponent* AoTASC = Cast<UAoTAbilitySystemComponent>(AbilitySystemComponent);
+	check(AoTASC);
+	AoTASC->AddCharacterAbilities(DefaultAbilities);
 }
 
 void AAoTCharacterBase::BeginPlay()

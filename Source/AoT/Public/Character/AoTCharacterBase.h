@@ -10,6 +10,7 @@
 class UAbilitySystemComponent;
 class UAttributeSet;
 class UGameplayEffect;
+class UGameplayAbility;
 
 UCLASS()
 class AOT_API AAoTCharacterBase : public ACharacter, public IAbilitySystemInterface
@@ -20,6 +21,7 @@ public:
 	AAoTCharacterBase();
 	UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 	void InitDefaultAttributes() const;
+	void InitDefaultAbilities() const;
 
 protected:
 	virtual void BeginPlay() override;
@@ -34,6 +36,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UGameplayEffect> DefaultAttributes;
+
+	UPROPERTY(EditDefaultsOnly)
+	TArray<TSubclassOf<UGameplayAbility>> DefaultAbilities;
 
 private:
 
