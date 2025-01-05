@@ -4,6 +4,10 @@
 #include "Player/AoTPlayerController.h"
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
+#include "Input/AoTInputComponent.h"
+#include "AbilitySystemBlueprintLibrary.h"
+#include "AbilitySystem/AoTAbilitySystemComponent.h"
+
 
 void AAoTPlayerController::BeginPlay()
 {
@@ -19,12 +23,13 @@ void AAoTPlayerController::SetupInputComponent()
 {
 	Super::SetupInputComponent();
 
-	UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(InputComponent);
-	if (IsValid(EnhancedInputComponent))
+	UAoTInputComponent* AoTInputComponent = CastChecked<UAoTInputComponent>(InputComponent);
+	if (IsValid(AoTInputComponent))
 	{
-		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AAoTPlayerController::Move);
-		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AAoTPlayerController::Look);
+		AoTInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AAoTPlayerController::Move);
+		AoTInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AAoTPlayerController::Look);
 
+		AoTInputComponent->BindAbilityActions(InputConfig, this, &ThisClass::AbilityInputTagPressed, &ThisClass::AbilityInputTagReleased, &ThisClass::AbilityInputTagHeld);
 	}
 }
 
@@ -54,4 +59,37 @@ void AAoTPlayerController::Look(const FInputActionValue& Value)
 		ControlledPawn->AddControllerYawInput(LookAxisVector.X);
 		ControlledPawn->AddControllerPitchInput(LookAxisVector.Y);
 	}
+}
+
+void AAoTPlayerController::AbilityInputTagPressed(FGameplayTag InputTag)
+{
+	if (GetASC())
+	{
+		GetASC()->AbilityInputTagPressed(InputTag);
+	}
+}
+
+void AAoTPlayerController::AbilityInputTagReleased(FGameplayTag InputTag)
+{
+	if (GetASC())
+	{
+		GetASC()->AbilityInputTagReleased(InputTag);
+	}
+}
+
+void AAoTPlayerController::AbilityInputTagHeld(FGameplayTag InputTag)
+{
+	if (GetASC())
+	{
+		GetASC()->AbilityInputTagHeld(InputTag);
+	}
+}
+
+UAoTAbilitySystemComponent* AAoTPlayerController::GetASC()
+{
+	if (AoTAbilitySystemComponent == nullptr)
+	{
+		AoTAbilitySystemComponent = Cast<UAoTAbilitySystemComponent>(UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(GetPawn()));
+	}
+	return AoTAbilitySystemComponent;
 }

@@ -16,4 +16,9 @@ class AOT_API UAoTAbilitySystemComponent : public UAbilitySystemComponent
 
 public:
 	void AbilityActorInfoSet();
+
+	void AbilityInputTagPressed(const FGameplayTag& InputTag);
+	void AbilityInputTagHeld(const FGameplayTag& InputTag);
+	void AbilityInputTagReleased(const FGameplayTag& InputTag);
+
 };

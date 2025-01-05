@@ -4,10 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
+#include "GameplayTagContainer.h"
 #include "AoTPlayerController.generated.h"
 
 class UInputMappingContext;
 class UInputAction;
+class UAoTInputConfig;
+class UAoTAbilitySystemComponent;
 struct FInputActionValue;
 
 /**
@@ -20,6 +23,8 @@ class AOT_API AAoTPlayerController : public APlayerController
 
 public:
 
+
+
 protected:
 
 	virtual void BeginPlay() override;
@@ -28,6 +33,13 @@ protected:
 	void Look(const FInputActionValue& Value);
 
 private:
+
+	void AbilityInputTagPressed(FGameplayTag InputTag);
+	void AbilityInputTagReleased(FGameplayTag InputTag);
+	void AbilityInputTagHeld(FGameplayTag InputTag);
+
+	UAoTAbilitySystemComponent* GetASC();
+
 
 	UPROPERTY(EditAnywhere, Category = "Input")
 	TObjectPtr<UInputMappingContext> AoTContext;
@@ -38,4 +50,9 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Input")
 	TObjectPtr<UInputAction> LookAction;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Input")
+	TObjectPtr<UAoTInputConfig> InputConfig;
+
+	UPROPERTY()
+	TObjectPtr<UAoTAbilitySystemComponent> AoTAbilitySystemComponent;
 };

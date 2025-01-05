@@ -5,7 +5,7 @@
 
 UInputAction* UAoTInputConfig::FindInputActionForTag(const FGameplayTag& InInputTag)
 {
-	for (auto AbilityInputAction : AbilityInputActions)
+	for (const auto& AbilityInputAction : AbilityInputActions)
 	{
 		if (AbilityInputAction.InputTag == InInputTag)
 			return AbilityInputAction.InputAction;
