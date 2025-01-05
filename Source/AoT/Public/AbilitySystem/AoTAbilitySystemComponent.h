@@ -16,6 +16,8 @@ class AOT_API UAoTAbilitySystemComponent : public UAbilitySystemComponent
 
 public:
 	void AbilityActorInfoSet();
+	UFUNCTION(BlueprintCallable)
+	void AddCharacterAbilities(const TArray<TSubclassOf<UGameplayAbility>>& GameplayAbilities);
 
 	void AbilityInputTagPressed(const FGameplayTag& InputTag);
 	void AbilityInputTagHeld(const FGameplayTag& InputTag);
