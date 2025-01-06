@@ -7,6 +7,7 @@
 #include "Input/AoTInputComponent.h"
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystem/AoTAbilitySystemComponent.h"
+#include "AbilitySystem/AoTGameplayAbility.h"
 
 
 void AAoTPlayerController::BeginPlay()
@@ -28,6 +29,7 @@ void AAoTPlayerController::SetupInputComponent()
 	{
 		AoTInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AAoTPlayerController::Move);
 		AoTInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AAoTPlayerController::Look);
+		AoTInputComponent->BindAction(HookAction, ETriggerEvent::Triggered, this, &AAoTPlayerController::GetHookFireStatus);
 
 		AoTInputComponent->BindAbilityActions(InputConfig, this, &ThisClass::AbilityInputTagPressed, &ThisClass::AbilityInputTagReleased, &ThisClass::AbilityInputTagHeld);
 	}
@@ -59,6 +61,12 @@ void AAoTPlayerController::Look(const FInputActionValue& Value)
 		ControlledPawn->AddControllerYawInput(LookAxisVector.X);
 		ControlledPawn->AddControllerPitchInput(LookAxisVector.Y);
 	}
+}
+
+void AAoTPlayerController::GetHookFireStatus(const FInputActionValue& Value)
+{
+	FVector2D HookStatusValue = Value.Get<FVector2D>();
+	HookStatus = HookStatusValue;
 }
 
 void AAoTPlayerController::AbilityInputTagPressed(FGameplayTag InputTag)

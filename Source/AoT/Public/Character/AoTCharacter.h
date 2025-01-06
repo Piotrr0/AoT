@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Character/AoTCharacterBase.h"
+#include "Player/AoTPlayerController.h"
 #include "AoTCharacter.generated.h"
 
 /**

@@ -16,7 +16,10 @@ void UAoTAbilitySystemComponent::AddCharacterAbilities(const TArray<TSubclassOf<
 		FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(AbilityClass, 1.f);
 		if (const UAoTGameplayAbility* AoTGameplayAbility = Cast<UAoTGameplayAbility>(AbilitySpec.Ability))
 		{
-			AbilitySpec.DynamicAbilityTags.AddTag(AoTGameplayAbility->InputTag);
+			for (const auto& InputTag : AoTGameplayAbility->InputTags)
+			{
+				AbilitySpec.DynamicAbilityTags.AddTag(InputTag);
+			}
 			GiveAbility(AbilitySpec);
 		}
 	}
@@ -31,6 +34,10 @@ void UAoTAbilitySystemComponent::AbilityInputTagPressed(const FGameplayTag& Inpu
 		if (AbilitySpec.DynamicAbilityTags.HasTagExact(InputTag))
 		{
 			AbilitySpecInputPressed(AbilitySpec);
+			if (AbilitySpec.IsActive())
+			{
+				InvokeReplicatedEvent(EAbilityGenericReplicatedEvent::InputPressed, AbilitySpec.Handle, AbilitySpec.ActivationInfo.GetActivationPredictionKey());
+			}
 		}
 	}
 }
@@ -61,6 +68,7 @@ void UAoTAbilitySystemComponent::AbilityInputTagReleased(const FGameplayTag& Inp
 		if (AbilitySpec.DynamicAbilityTags.HasTagExact(InputTag) && AbilitySpec.IsActive())
 		{
 			AbilitySpecInputReleased(AbilitySpec);
+			InvokeReplicatedEvent(EAbilityGenericReplicatedEvent::InputReleased, AbilitySpec.Handle, AbilitySpec.ActivationInfo.GetActivationPredictionKey());
 		}
 	}
 }

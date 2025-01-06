@@ -18,6 +18,6 @@ class AOT_API UAoTGameplayAbility : public UGameplayAbility
 public:
 
 	UPROPERTY(EditDefaultsOnly)
-	FGameplayTag InputTag;
+	TArray<FGameplayTag> InputTags;
 
 };
