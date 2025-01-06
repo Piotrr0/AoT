@@ -18,7 +18,9 @@ class AOT_API UAoTProjectileAbility : public UAoTGameplayAbility
 	
 protected:
 	UFUNCTION(BlueprintCallable)
-	void SpawnProjectile(const FVector& SpawnLocation, const FRotator& SpawnRotation);
+	virtual AAoTProjectile* SpawnProjectile(const FVector& SpawnLocation, const FRotator& SpawnRotation);
+
+	virtual void SetProjectileProperties(AAoTProjectile* Projectile);
 
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<AAoTProjectile> ProjectileClass;

@@ -17,6 +17,9 @@ class AOT_API UHookAbility : public UAoTProjectileAbility
 
 protected:
 
+	virtual AAoTProjectile* SpawnProjectile(const FVector& SpawnLocation, const FRotator& SpawnRotation) override;
+	virtual void SetProjectileProperties(AAoTProjectile* Projectile) override;
+
 	UFUNCTION(BlueprintCallable)
 	void CalculateHookSpawnAndEndLocation(const FGameplayTag& GearTag);
 
@@ -33,6 +36,9 @@ private:
 
 	UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	FVector HookEndLocation;
+
+	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	FGameplayTag HookGearTag;
 
 	UPROPERTY(EditDefaultsOnly)
 	float HookDistance = 10000.f;

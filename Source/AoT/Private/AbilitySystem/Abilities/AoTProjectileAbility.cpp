@@ -4,14 +4,21 @@
 #include "AbilitySystem/Abilities/AoTProjectileAbility.h"
 #include "Actor/AoTProjectile.h"
 
-void UAoTProjectileAbility::SpawnProjectile(const FVector& SpawnLocation, const FRotator& SpawnRotation)
+AAoTProjectile* UAoTProjectileAbility::SpawnProjectile(const FVector& SpawnLocation, const FRotator& SpawnRotation)
 {
 	FTransform SpawnTransform;
 	SpawnTransform.SetLocation(SpawnLocation);
 	SpawnTransform.SetRotation(SpawnRotation.Quaternion());
 	AAoTProjectile* Projectile = GetWorld()->SpawnActorDeferred<AAoTProjectile>(ProjectileClass, SpawnTransform, GetOwningActorFromActorInfo(), Cast<APawn>(GetOwningActorFromActorInfo()), ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
 
+	SetProjectileProperties(Projectile);
 
 	Projectile->FinishSpawning(SpawnTransform);
+	return Projectile;
+}
+
+void UAoTProjectileAbility::SetProjectileProperties(AAoTProjectile* Projectile)
+{
+
 }
 
