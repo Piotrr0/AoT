@@ -17,6 +17,8 @@ class AOT_API UHookAbility : public UAoTProjectileAbility
 
 protected:
 
+	UFUNCTION(BlueprintCallable)
+	void CalculateHookSpawnAndEndLocation(const FGameplayTag& GearTag);
 
 private:
 
