@@ -18,6 +18,9 @@ public:
 	FGameplayTag InputTag_LMB;
 	FGameplayTag InputTag_RMB;
 
+	FGameplayTag CombatSocket_LeftGear;
+	FGameplayTag CombatSocket_RightGear;
+
 private:
 
 	static FAoTGameplayTags GameplayTags;

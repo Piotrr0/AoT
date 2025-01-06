@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "AbilitySystemInterface.h"
+#include "Interfaces/CombatInterface.h"
 #include "AoTCharacterBase.generated.h"
 
 class UAbilitySystemComponent;
@@ -13,7 +14,7 @@ class UGameplayEffect;
 class UGameplayAbility;
 
 UCLASS()
-class AOT_API AAoTCharacterBase : public ACharacter, public IAbilitySystemInterface
+class AOT_API AAoTCharacterBase : public ACharacter, public IAbilitySystemInterface, public ICombatInterface
 {
 	GENERATED_BODY()
 
@@ -22,6 +23,9 @@ public:
 	UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 	void InitDefaultAttributes() const;
 	void InitDefaultAbilities() const;
+
+	/*Combat Interface*/
+	virtual FVector GetCombatSocketLocation_Implementation(const FGameplayTag& CombatSocketTag) const;
 
 protected:
 	virtual void BeginPlay() override;

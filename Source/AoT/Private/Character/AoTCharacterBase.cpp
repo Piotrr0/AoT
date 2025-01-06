@@ -3,6 +3,7 @@
 
 #include "Character/AoTCharacterBase.h"
 #include "AbilitySystem/AoTAbilitySystemComponent.h"
+#include "AoTGameplayTags.h"
 
 AAoTCharacterBase::AAoTCharacterBase()
 {
@@ -24,6 +25,21 @@ void AAoTCharacterBase::InitDefaultAbilities() const
 	UAoTAbilitySystemComponent* AoTASC = Cast<UAoTAbilitySystemComponent>(AbilitySystemComponent);
 	check(AoTASC);
 	AoTASC->AddCharacterAbilities(DefaultAbilities);
+}
+
+FVector AAoTCharacterBase::GetCombatSocketLocation_Implementation(const FGameplayTag& CombatSocketTag) const
+{
+	FAoTGameplayTags GameplayTags = FAoTGameplayTags::Get();
+
+	if (CombatSocketTag == GameplayTags.CombatSocket_LeftGear)
+	{
+		return GetMesh()->GetSocketLocation("LeftGear_Socket");
+	}
+	else if (CombatSocketTag == GameplayTags.CombatSocket_RightGear)
+	{
+		return GetMesh()->GetSocketLocation("RightGear_Socket");
+	}
+	return FVector();
 }
 
 void AAoTCharacterBase::BeginPlay()
