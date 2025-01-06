@@ -41,6 +41,7 @@ protected:
 	* {1, 1}: Both hooks fired.
 	*/
 	void GetHookFireStatus(const FInputActionValue& Value);
+	void HookReleased();
 
 
 private:

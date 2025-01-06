@@ -30,6 +30,7 @@ void AAoTPlayerController::SetupInputComponent()
 		AoTInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AAoTPlayerController::Move);
 		AoTInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AAoTPlayerController::Look);
 		AoTInputComponent->BindAction(HookAction, ETriggerEvent::Triggered, this, &AAoTPlayerController::GetHookFireStatus);
+		AoTInputComponent->BindAction(HookAction, ETriggerEvent::Completed, this, &AAoTPlayerController::HookReleased);
 
 		AoTInputComponent->BindAbilityActions(InputConfig, this, &ThisClass::AbilityInputTagPressed, &ThisClass::AbilityInputTagReleased, &ThisClass::AbilityInputTagHeld);
 	}
@@ -67,6 +68,11 @@ void AAoTPlayerController::GetHookFireStatus(const FInputActionValue& Value)
 {
 	FVector2D HookStatusValue = Value.Get<FVector2D>();
 	HookStatus = HookStatusValue;
+}
+
+void AAoTPlayerController::HookReleased()
+{
+	HookStatus = FVector2D::ZeroVector;
 }
 
 void AAoTPlayerController::AbilityInputTagPressed(FGameplayTag InputTag)
