@@ -4,12 +4,14 @@
 #include "Actor/AoTProjectile.h"
 #include "Components/SphereComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
+#include "AoT/AoT.h"
 
 AAoTProjectile::AAoTProjectile()
 {
 	PrimaryActorTick.bCanEverTick = false;
 
 	CollisionSphere = CreateDefaultSubobject<USphereComponent>(FName("CollisionSphere"));
+	CollisionSphere->SetCollisionObjectType(ECC_Projectile);
 	CollisionSphere->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	CollisionSphere->SetCollisionResponseToAllChannels(ECR_Ignore);
 	CollisionSphere->SetCollisionResponseToChannel(ECC_WorldDynamic, ECR_Overlap);
@@ -32,6 +34,20 @@ void AAoTProjectile::BeginPlay()
 
 void AAoTProjectile::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-
+	if (OtherActor)
+	{
+		if (OverlapPolicy == EOverlapPolicy::Destroy)
+		{
+			Destroy();
+		}
+		else if (OverlapPolicy == EOverlapPolicy::Attach)
+		{
+			ProjectileMovement->StopMovementImmediately();
+			if (OtherComp)
+			{
+				AttachToComponent(OtherComp, FAttachmentTransformRules::KeepWorldTransform);
+			}
+		}
+	}
 }
 

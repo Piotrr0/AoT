@@ -9,6 +9,14 @@
 class USphereComponent;
 class UProjectileMovementComponent;
 
+UENUM(BlueprintType)
+enum class EOverlapPolicy
+{
+	Destroy,
+	Attach,
+	Penetrate
+};
+
 UCLASS()
 class AOT_API AAoTProjectile : public AActor
 {
@@ -30,4 +38,8 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<UProjectileMovementComponent> ProjectileMovement;
+
+	UPROPERTY(EditDefaultsOnly)
+	EOverlapPolicy OverlapPolicy;
 };
+	
