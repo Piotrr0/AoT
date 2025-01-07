@@ -7,6 +7,8 @@
 #include "GameplayTagContainer.h"
 #include "HookAbility.generated.h"
 
+class AHookProjectile;
+
 /**
  * 
  */
@@ -24,8 +26,8 @@ public:
 
 protected:
 
-	virtual AAoTProjectile* SpawnProjectile(const FVector& SpawnLocation, const FRotator& SpawnRotation) override;
-	virtual void SetProjectileProperties(AAoTProjectile* Projectile) override;
+	UFUNCTION(BlueprintCallable)
+	AHookProjectile* SpawnHookProjectile(const FVector& SpawnLocation, const FRotator& SpawnRotation, const FGameplayTag& GearTag);
 
 	UFUNCTION(BlueprintCallable)
 	void CalculateHookSpawnAndEndLocation(const FGameplayTag& GearTag);
@@ -45,8 +47,6 @@ private:
 	UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	FVector HookEndLocation;
 
-	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
-	FGameplayTag HookGearTag;
 
 	UPROPERTY(EditDefaultsOnly)
 	float HookDistance = 10000.f;

@@ -7,21 +7,17 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "Actor/HookProjectile.h"
 
-AAoTProjectile* UHookAbility::SpawnProjectile(const FVector& SpawnLocation, const FRotator& SpawnRotation)
+AHookProjectile* UHookAbility::SpawnHookProjectile(const FVector& SpawnLocation, const FRotator& SpawnRotation, const FGameplayTag& GearTag)
 {
-	return Super::SpawnProjectile(SpawnLocation, SpawnRotation);
-}
+	FTransform SpawnTransform;
+	SpawnTransform.SetLocation(SpawnLocation);
+	SpawnTransform.SetRotation(SpawnRotation.Quaternion());
+	AHookProjectile* Projectile = GetWorld()->SpawnActorDeferred<AHookProjectile>(ProjectileClass, SpawnTransform, GetOwningActorFromActorInfo(), Cast<APawn>(GetOwningActorFromActorInfo()), ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
 
-void UHookAbility::SetProjectileProperties(AAoTProjectile* Projectile)
-{
-	Super::SetProjectileProperties(Projectile);
-	if (AHookProjectile* HookProjectile = Cast<AHookProjectile>(Projectile))
-	{
-		if (HookGearTag.IsValid())
-		{
-			HookProjectile->GearTag = HookGearTag;
-		}
-	}
+	Projectile->GearTag = GearTag;
+
+	Projectile->FinishSpawning(SpawnTransform);
+	return Projectile;
 }
 
 void UHookAbility::CalculateHookSpawnAndEndLocation(const FGameplayTag& GearTag)

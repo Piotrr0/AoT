@@ -35,7 +35,7 @@ void AAoTPlayerController::SetupInputComponent()
 		AoTInputComponent->BindAction(LeftAction, ETriggerEvent::Started, this, &AAoTPlayerController::LeftMouseButtonPressed);
 		AoTInputComponent->BindAction(RightAction, ETriggerEvent::Started, this, &AAoTPlayerController::RightMouseButtonPressed);
 		AoTInputComponent->BindAction(LeftAction, ETriggerEvent::Completed, this, &AAoTPlayerController::LeftMouseButtonReleased);
-		AoTInputComponent->BindAction(RightAction, ETriggerEvent::Completed, this, &AAoTPlayerController::RightMouseButtonPressed);
+		AoTInputComponent->BindAction(RightAction, ETriggerEvent::Completed, this, &AAoTPlayerController::RightMouseButtonReleased);
 
 
 
