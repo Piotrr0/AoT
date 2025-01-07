@@ -13,4 +13,12 @@ void FAoTGameplayTags::InitNativeGameplayTags()
 
 	GameplayTags.CombatSocket_LeftGear = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("CombatSocket.LeftGear"), FString("Left Gear SocketTag"));
 	GameplayTags.CombatSocket_RightGear = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("CombatSocket.RightGear"), FString("Right Gear SocketTag"));
+
+	GameplayTags.Events_LeftHookFired = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Events.LeftHookFired"), FString("Left Hook Fired"));
+	GameplayTags.Events_RightHookFired = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Events.RightHookFired"), FString("Right Hook Fired"));
+	GameplayTags.Events_LeftHookReleased = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Events.LeftHookReleased"), FString("Left Hook Released"));
+	GameplayTags.Events_RightHookReleased = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Events.RightHookReleased"), FString("Right Hook Released"));
+
+	GameplayTags.Abilities_Hook = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Abilities.Hook"), FString("Hook Ability"));
+
 }

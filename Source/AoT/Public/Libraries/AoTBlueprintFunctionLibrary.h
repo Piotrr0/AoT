@@ -15,6 +15,4 @@ class AOT_API UAoTBlueprintFunctionLibrary : public UBlueprintFunctionLibrary
 	GENERATED_BODY()
 public:
 
-	UFUNCTION(BlueprintPure, Category = "AoTBlueprintFunctionLibrary|Input")
-	static FVector2D GetHookFireStatus(const UObject* WorldContextObject);
 };

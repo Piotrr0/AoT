@@ -8,6 +8,8 @@
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystem/AoTAbilitySystemComponent.h"
 #include "AbilitySystem/AoTGameplayAbility.h"
+#include "AbilitySystem/Abilities/HookAbility.h"
+#include "AoTGameplayTags.h"
 
 
 void AAoTPlayerController::BeginPlay()
@@ -29,8 +31,13 @@ void AAoTPlayerController::SetupInputComponent()
 	{
 		AoTInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AAoTPlayerController::Move);
 		AoTInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AAoTPlayerController::Look);
-		AoTInputComponent->BindAction(HookAction, ETriggerEvent::Triggered, this, &AAoTPlayerController::GetHookFireStatus);
-		AoTInputComponent->BindAction(HookAction, ETriggerEvent::Completed, this, &AAoTPlayerController::HookReleased);
+
+		AoTInputComponent->BindAction(LeftAction, ETriggerEvent::Started, this, &AAoTPlayerController::LeftMouseButtonPressed);
+		AoTInputComponent->BindAction(RightAction, ETriggerEvent::Started, this, &AAoTPlayerController::RightMouseButtonPressed);
+		AoTInputComponent->BindAction(LeftAction, ETriggerEvent::Completed, this, &AAoTPlayerController::LeftMouseButtonReleased);
+		AoTInputComponent->BindAction(RightAction, ETriggerEvent::Completed, this, &AAoTPlayerController::RightMouseButtonPressed);
+
+
 
 		AoTInputComponent->BindAbilityActions(InputConfig, this, &ThisClass::AbilityInputTagPressed, &ThisClass::AbilityInputTagReleased, &ThisClass::AbilityInputTagHeld);
 	}
@@ -64,15 +71,44 @@ void AAoTPlayerController::Look(const FInputActionValue& Value)
 	}
 }
 
-void AAoTPlayerController::GetHookFireStatus(const FInputActionValue& Value)
+void AAoTPlayerController::LeftMouseButtonPressed()
 {
-	FVector2D HookStatusValue = Value.Get<FVector2D>();
-	HookStatus = HookStatusValue;
+	FGameplayEventData LeftHookEventData;
+
+	if (UAbilitySystemComponent* ASC = GetASC())
+	{
+		ASC->HandleGameplayEvent(FAoTGameplayTags::Get().Events_LeftHookFired, &LeftHookEventData);
+	}
 }
 
-void AAoTPlayerController::HookReleased()
+void AAoTPlayerController::RightMouseButtonPressed()
 {
-	HookStatus = FVector2D::ZeroVector;
+	FGameplayEventData RightHookEventData;
+
+	if (UAbilitySystemComponent* ASC = GetASC())
+	{
+		ASC->HandleGameplayEvent(FAoTGameplayTags::Get().Events_RightHookFired, &RightHookEventData);
+	}
+}
+
+void AAoTPlayerController::LeftMouseButtonReleased()
+{
+	FGameplayEventData LeftHookReleaseEventData;
+
+	if (UAbilitySystemComponent* ASC = GetASC())
+	{
+		ASC->HandleGameplayEvent(FAoTGameplayTags::Get().Events_LeftHookReleased, &LeftHookReleaseEventData);
+	}
+}
+
+void AAoTPlayerController::RightMouseButtonReleased()
+{
+	FGameplayEventData RightHookReleaseEventData;
+
+	if (UAbilitySystemComponent* ASC = GetASC())
+	{
+		ASC->HandleGameplayEvent(FAoTGameplayTags::Get().Events_RightHookReleased, &RightHookReleaseEventData);
+	}
 }
 
 void AAoTPlayerController::AbilityInputTagPressed(FGameplayTag InputTag)

@@ -15,6 +15,13 @@ class AOT_API UHookAbility : public UAoTProjectileAbility
 {
 	GENERATED_BODY()
 
+public:
+
+	UPROPERTY(BlueprintReadWrite)
+	bool bLeftHookFired;
+	UPROPERTY(BlueprintReadWrite)
+	bool bRightHookFired;
+
 protected:
 
 	virtual AAoTProjectile* SpawnProjectile(const FVector& SpawnLocation, const FRotator& SpawnRotation) override;
@@ -22,6 +29,7 @@ protected:
 
 	UFUNCTION(BlueprintCallable)
 	void CalculateHookSpawnAndEndLocation(const FGameplayTag& GearTag);
+
 
 private:
 

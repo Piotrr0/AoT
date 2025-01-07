@@ -11,6 +11,7 @@ class UInputMappingContext;
 class UInputAction;
 class UAoTInputConfig;
 class UAoTAbilitySystemComponent;
+class UHookAbility;
 struct FInputActionValue;
 
 /**
@@ -21,10 +22,6 @@ class AOT_API AAoTPlayerController : public APlayerController
 {
 	GENERATED_BODY()
 
-public:
-
-	FVector2D GetHookStatus() const { return HookStatus; }
-
 
 protected:
 
@@ -32,17 +29,10 @@ protected:
 	virtual void SetupInputComponent() override;
 	void Move(const FInputActionValue& Value);
 	void Look(const FInputActionValue& Value);
-
-	/*
-	* Explanation of the Values:
-	* {1, 0}: Left hook fired.
-	* {0, 1}: Right hook fired.
-	* {0, 0}: No hooks fired.
-	* {1, 1}: Both hooks fired.
-	*/
-	void GetHookFireStatus(const FInputActionValue& Value);
-	void HookReleased();
-
+	void LeftMouseButtonPressed();
+	void RightMouseButtonPressed();
+	void LeftMouseButtonReleased();
+	void RightMouseButtonReleased();
 
 private:
 
@@ -51,7 +41,6 @@ private:
 	void AbilityInputTagHeld(FGameplayTag InputTag);
 
 	UAoTAbilitySystemComponent* GetASC();
-	FVector2D HookStatus;
 
 	UPROPERTY(EditAnywhere, Category = "Input")
 	TObjectPtr<UInputMappingContext> AoTContext;
@@ -63,7 +52,10 @@ private:
 	TObjectPtr<UInputAction> LookAction;
 
 	UPROPERTY(EditAnywhere, Category = "Input")
-	TObjectPtr<UInputAction> HookAction;
+	TObjectPtr<UInputAction> LeftAction;
+
+	UPROPERTY(EditAnywhere, Category = "Input")
+	TObjectPtr<UInputAction> RightAction;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	TObjectPtr<UAoTInputConfig> InputConfig;

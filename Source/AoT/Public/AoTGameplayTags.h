@@ -21,6 +21,13 @@ public:
 	FGameplayTag CombatSocket_LeftGear;
 	FGameplayTag CombatSocket_RightGear;
 
+	FGameplayTag Events_LeftHookFired;
+	FGameplayTag Events_RightHookFired;
+	FGameplayTag Events_LeftHookReleased;
+	FGameplayTag Events_RightHookReleased;
+	
+	FGameplayTag Abilities_Hook;
+
 private:
 
 	static FAoTGameplayTags GameplayTags;
