@@ -51,7 +51,4 @@ private:
 
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, meta = (AllowPrivateAccess = "true"))
 	FGameplayTag RightGearTag;
-
-	UPROPERTY(EditDefaultsOnly)
-	float HookDistance = 10000.f;
 };
