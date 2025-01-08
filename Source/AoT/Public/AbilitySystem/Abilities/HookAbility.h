@@ -9,6 +9,18 @@
 
 class AHookProjectile;
 
+USTRUCT(BlueprintType)
+struct FHookSpawnParams
+{
+	GENERATED_BODY()
+
+	UPROPERTY(BlueprintReadOnly,VisibleAnywhere)
+	FVector SpawnLocation = FVector();
+	
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
+	FRotator SpawnRotation = FRotator();
+};
+
 /**
  * 
  */
@@ -18,11 +30,11 @@ class AOT_API UHookAbility : public UAoTProjectileAbility
 	GENERATED_BODY()
 
 public:
+	UPROPERTY(BlueprintReadWrite)
+	TObjectPtr<AHookProjectile> LeftHook;
 
 	UPROPERTY(BlueprintReadWrite)
-	bool bLeftHookFired;
-	UPROPERTY(BlueprintReadWrite)
-	bool bRightHookFired;
+	TObjectPtr<AHookProjectile> RightHook;
 
 protected:
 
@@ -30,8 +42,7 @@ protected:
 	AHookProjectile* SpawnHookProjectile(const FVector& SpawnLocation, const FRotator& SpawnRotation, const FGameplayTag& GearTag);
 
 	UFUNCTION(BlueprintCallable)
-	void CalculateHookSpawnAndEndLocation(const FGameplayTag& GearTag);
-
+	FHookSpawnParams CalculateHookSpawnParams(const FGameplayTag& GearTag);
 
 private:
 
@@ -40,13 +51,6 @@ private:
 
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, meta = (AllowPrivateAccess = "true"))
 	FGameplayTag RightGearTag;
-
-	UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	FVector HookSpawnLocation;
-
-	UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	FVector HookEndLocation;
-
 
 	UPROPERTY(EditDefaultsOnly)
 	float HookDistance = 10000.f;
