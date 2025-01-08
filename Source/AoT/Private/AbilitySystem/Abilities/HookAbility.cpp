@@ -52,6 +52,22 @@ void UHookAbility::SpawnHookProjectile(const FVector& SpawnLocation, const FRota
 	BindCallbacksToDependencies();
 }
 
+void UHookAbility::ReleaseHook(const FGameplayTag& GearTag)
+{
+	if (GearTag.MatchesTagExact(FAoTGameplayTags::Get().CombatSocket_LeftGear))
+	{
+		LeftHook->ReturnToOwner();
+		LeftHookResults.Empty();
+		bLeftHookHit = false;
+	}
+	else
+	{
+		RightHook->ReturnToOwner();
+		RightHookResults.Empty();
+		bRightHookHit = false;
+	}
+}
+
 FHookSpawnParams UHookAbility::CalculateHookSpawnParams(const FGameplayTag& GearTag)
 {
 	FHookSpawnParams Params;
@@ -73,10 +89,12 @@ void UHookAbility::HandleReceivedHookLocation(const FGameplayTag& GearTag, const
 	if (GearTag.MatchesTagExact(FAoTGameplayTags::Get().CombatSocket_LeftGear))
 	{
 		bLeftHookHit = true;
+		LeftHookResults.Add(HitResult);
 	}
 	else
 	{
 		bRightHookHit = true;
+		RightHookResults.Add(HitResult);
 	}
 }
 

@@ -51,6 +51,9 @@ protected:
 	void SpawnHookProjectile(const FVector& SpawnLocation, const FRotator& SpawnRotation, const FGameplayTag& GearTag);
 
 	UFUNCTION(BlueprintCallable)
+	void ReleaseHook(const FGameplayTag& GearTag);
+
+	UFUNCTION(BlueprintCallable)
 	FHookSpawnParams CalculateHookSpawnParams(const FGameplayTag& GearTag);
 
 	UFUNCTION()
@@ -60,6 +63,12 @@ protected:
 		
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<AHookProjectile> HookClass;
+
+	UPROPERTY(BlueprintReadOnly)
+	TArray<FHitResult> LeftHookResults;
+
+	UPROPERTY(BlueprintReadOnly)
+	TArray<FHitResult> RightHookResults;
 
 private:
 
