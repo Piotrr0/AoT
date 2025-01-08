@@ -2,6 +2,8 @@
 
 
 #include "Actor/HookProjectile.h"
+#include "AoTGameplayTags.h"
+#include "AbilitySystem/Abilities/HookAbility.h"
 
 AHookProjectile::AHookProjectile()
 {
@@ -9,7 +11,7 @@ AHookProjectile::AHookProjectile()
 
 void AHookProjectile::PrematureReturn()
 {
-	if (!bHit)
+	if (!bLocationFound)
 	{
 		ReturnToOwner();
 	}
@@ -25,6 +27,14 @@ void AHookProjectile::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, 
 	Super::OnSphereOverlap(OverlappedComponent, OtherActor, OtherComp, OtherBodyIndex, bFromSweep, SweepResult);
 	if (OtherActor)
 	{
-		bHit = true;
+		if (FireSocket.MatchesTagExact(FAoTGameplayTags::Get().CombatSocket_LeftGear))
+		{
+			OwningAbility->bLeftHookHit = true;
+		}
+		else
+		{
+			OwningAbility->bRightHookHit = true;
+		}
+		bLocationFound = true;
 	}
 }

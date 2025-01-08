@@ -30,19 +30,29 @@ class AOT_API UHookAbility : public UAoTProjectileAbility
 	GENERATED_BODY()
 
 public:
+
 	UPROPERTY(BlueprintReadWrite)
 	TObjectPtr<AHookProjectile> LeftHook;
 
 	UPROPERTY(BlueprintReadWrite)
 	TObjectPtr<AHookProjectile> RightHook;
+	
+	UPROPERTY(BlueprintReadWrite)
+	bool bLeftHookHit;
+
+	UPROPERTY(BlueprintReadWrite)
+	bool bRightHookHit;
 
 protected:
 
 	UFUNCTION(BlueprintCallable)
-	AHookProjectile* SpawnHookProjectile(const FVector& SpawnLocation, const FRotator& SpawnRotation, const FGameplayTag& GearTag);
+	void SpawnHookProjectile(const FVector& SpawnLocation, const FRotator& SpawnRotation, const FGameplayTag& GearTag);
 
 	UFUNCTION(BlueprintCallable)
 	FHookSpawnParams CalculateHookSpawnParams(const FGameplayTag& GearTag);
+
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<AHookProjectile> HookClass;
 
 private:
 

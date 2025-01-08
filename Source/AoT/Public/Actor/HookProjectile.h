@@ -42,5 +42,8 @@ protected:
 	float HookLifeTime = 2.f;
 
 	UPROPERTY(BlueprintReadWrite) /* Set to false in ReturnToOwner event blueprint */
-	bool bHit; /* Not set to false on hook realse */
+	bool bLocationFound; /* Not set to false on hook realse */
+
+	UPROPERTY(BlueprintReadWrite)
+	bool bReturning;
 };

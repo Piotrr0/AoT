@@ -6,20 +6,30 @@
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Actor/HookProjectile.h"
+#include "AoTGameplayTags.h"
 
-AHookProjectile* UHookAbility::SpawnHookProjectile(const FVector& SpawnLocation, const FRotator& SpawnRotation, const FGameplayTag& GearTag)
+void UHookAbility::SpawnHookProjectile(const FVector& SpawnLocation, const FRotator& SpawnRotation, const FGameplayTag& GearTag)
 {
 	FTransform SpawnTransform;
 	SpawnTransform.SetLocation(SpawnLocation);
 	SpawnTransform.SetRotation(SpawnRotation.Quaternion());
 
-	AHookProjectile* Projectile = GetWorld()->SpawnActorDeferred<AHookProjectile>(ProjectileClass, SpawnTransform, GetOwningActorFromActorInfo(), Cast<APawn>(GetOwningActorFromActorInfo()), ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
+	AActor* Projectile = UGameplayStatics::BeginDeferredActorSpawnFromClass(GetWorld(), HookClass, SpawnTransform);
+	if (AHookProjectile* HookProjectile = Cast<AHookProjectile>(Projectile))
+	{
+		HookProjectile->OwningAbility = this;
+		HookProjectile->FireSocket = GearTag;
 
-	Projectile->OwningAbility = this;
-	Projectile->FireSocket = GearTag;
-
-	Projectile->FinishSpawning(SpawnTransform);
-	return Projectile;
+		if (GearTag.MatchesTagExact(FAoTGameplayTags::Get().CombatSocket_LeftGear))
+		{
+			LeftHook = HookProjectile;
+		}
+		else
+		{
+			RightHook = HookProjectile;
+		}
+	}
+	UGameplayStatics::FinishSpawningActor(Projectile, SpawnTransform);
 }
 
 FHookSpawnParams UHookAbility::CalculateHookSpawnParams(const FGameplayTag& GearTag)
