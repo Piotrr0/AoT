@@ -9,8 +9,8 @@
 
 class UHookAbility;
 
-DECLARE_MULTICAST_DELEGATE_TwoParams(FHookLocationReceived, bool, const FHitResult&);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FHookRetunedToOwner, bool, bForLeft);
+DECLARE_MULTICAST_DELEGATE_TwoParams(FHookLocationReceived, const FGameplayTag&, const FHitResult&);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FHookRetunedToOwner, const FGameplayTag&, FireSocket);
 /**
  * 
  */
@@ -25,9 +25,6 @@ public:
 	/* Tag for socket From which it was fired */
 	UPROPERTY(BlueprintReadOnly)
 	FGameplayTag FireSocket;
-
-	UPROPERTY(BlueprintReadOnly)
-	bool bIsLeftSocket;
 
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
 	void ReturnToOwner();

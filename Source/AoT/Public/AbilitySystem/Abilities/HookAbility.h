@@ -54,9 +54,9 @@ protected:
 	FHookSpawnParams CalculateHookSpawnParams(const FGameplayTag& GearTag);
 
 	UFUNCTION()
-	void HandleReceivedHookLocation(bool bForLeft, const FHitResult& HitResult);
+	void HandleReceivedHookLocation(const FGameplayTag& GearTag, const FHitResult& HitResult);
 	UFUNCTION()
-	void HandleHookReturn(bool bForLeft);
+	void HandleHookReturn(const FGameplayTag& GearTag);
 		
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<AHookProjectile> HookClass;

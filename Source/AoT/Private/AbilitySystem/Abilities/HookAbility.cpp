@@ -68,9 +68,9 @@ FHookSpawnParams UHookAbility::CalculateHookSpawnParams(const FGameplayTag& Gear
 	return Params;
 }
 
-void UHookAbility::HandleReceivedHookLocation(bool bForLeft, const FHitResult& HitResult)
+void UHookAbility::HandleReceivedHookLocation(const FGameplayTag& GearTag, const FHitResult& HitResult)
 {
-	if (bForLeft)
+	if (GearTag.MatchesTagExact(FAoTGameplayTags::Get().CombatSocket_LeftGear))
 	{
 		bLeftHookHit = true;
 	}
@@ -80,9 +80,9 @@ void UHookAbility::HandleReceivedHookLocation(bool bForLeft, const FHitResult& H
 	}
 }
 
-void UHookAbility::HandleHookReturn(bool bForLeft)
+void UHookAbility::HandleHookReturn(const FGameplayTag& GearTag)
 {
-	if (bForLeft)
+	if (GearTag.MatchesTagExact(FAoTGameplayTags::Get().CombatSocket_LeftGear))
 	{
 		LeftHook = nullptr;
 	}
