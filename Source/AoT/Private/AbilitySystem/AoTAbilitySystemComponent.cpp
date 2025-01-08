@@ -72,3 +72,19 @@ void UAoTAbilitySystemComponent::AbilityInputTagReleased(const FGameplayTag& Inp
 		}
 	}
 }
+
+UGameplayAbility* UAoTAbilitySystemComponent::GetAbilityByAbilityTag(const FGameplayTag& AbilityTag)
+{
+	FScopedAbilityListLock ActiveScopeLoc(*this);
+	for (FGameplayAbilitySpec& AbilitySpec : GetActivatableAbilities())
+	{
+		for (FGameplayTag Tag : AbilitySpec.Ability.Get()->AbilityTags)
+		{
+			if (Tag.MatchesTag(AbilityTag))
+			{
+				return AbilitySpec.Ability;
+			}
+		}
+	}
+	return nullptr;
+}

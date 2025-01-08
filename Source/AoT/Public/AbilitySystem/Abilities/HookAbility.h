@@ -45,6 +45,8 @@ public:
 
 	void BindCallbacksToDependencies();
 
+	FVector GetHookPositionFromAnchors() const;
+
 protected:
 
 	UFUNCTION(BlueprintCallable)

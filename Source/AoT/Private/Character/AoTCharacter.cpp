@@ -3,7 +3,9 @@
 
 #include "Character/AoTCharacter.h"
 #include "Player/AoTPlayerState.h"
+#include "AoTGameplayTags.h"
 #include "AbilitySystem/AoTAbilitySystemComponent.h"
+#include "AbilitySystem/Abilities/HookAbility.h"
 
 AAoTCharacter::AAoTCharacter()
 {
@@ -14,6 +16,42 @@ void AAoTCharacter::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
 	InitAbilityActorInfo();
+}
+
+bool AAoTCharacter::GetLeftHookHit_Implementation()
+{
+	if (UAoTAbilitySystemComponent* AoTASC = Cast<UAoTAbilitySystemComponent>(AbilitySystemComponent))
+	{
+		if (const UHookAbility* HookAbility = Cast<UHookAbility>(AoTASC->GetAbilityByAbilityTag(FAoTGameplayTags::Get().Abilities_Hook)))
+		{
+			HookAbility->bLeftHookHit;
+		}
+	}
+	return false;
+}
+
+bool AAoTCharacter::GetRightHookHit_Implementation()
+{
+	if (UAoTAbilitySystemComponent* AoTASC = Cast<UAoTAbilitySystemComponent>(AbilitySystemComponent))
+	{
+		if (const UHookAbility* HookAbility = Cast<UHookAbility>(AoTASC->GetAbilityByAbilityTag(FAoTGameplayTags::Get().Abilities_Hook)))
+		{
+			HookAbility->bRightHookHit;
+		}
+	}
+	return false;
+}
+
+FVector AAoTCharacter::GetHookPositionFromAnchors_Implementation()
+{
+	if (UAoTAbilitySystemComponent* AoTASC = Cast<UAoTAbilitySystemComponent>(AbilitySystemComponent))
+	{
+		if (const UHookAbility* HookAbility = Cast<UHookAbility>(AoTASC->GetAbilityByAbilityTag(FAoTGameplayTags::Get().Abilities_Hook)))
+		{
+			return HookAbility->GetHookPositionFromAnchors();
+		}
+	}
+	return FVector::ZeroVector;
 }
 
 void AAoTCharacter::InitAbilityActorInfo()

@@ -28,6 +28,23 @@ void UHookAbility::BindCallbacksToDependencies()
 	}
 }
 
+FVector UHookAbility::GetHookPositionFromAnchors() const
+{
+	if (bRightHookHit && bLeftHookHit)
+	{
+		return UKismetMathLibrary::VLerp(LeftHookResults.Last().ImpactPoint, RightHookResults.Last().ImpactPoint, 0.5f);
+	}
+	if (bLeftHookHit)
+	{
+		return LeftHookResults.Last().ImpactPoint;
+	}
+	if (bRightHookHit)
+	{
+		return RightHookResults.Last().ImpactPoint;
+	}
+	return FVector::ZeroVector;
+}
+
 void UHookAbility::SpawnHookProjectile(const FVector& SpawnLocation, const FRotator& SpawnRotation, const FGameplayTag& GearTag)
 {
 	FTransform SpawnTransform;
