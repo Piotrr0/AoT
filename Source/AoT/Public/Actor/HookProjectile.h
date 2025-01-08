@@ -9,6 +9,8 @@
 
 class UHookAbility;
 
+DECLARE_MULTICAST_DELEGATE_TwoParams(FHookLocationReceived, bool, const FHitResult&);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FHookRetunedToOwner, bool, bForLeft);
 /**
  * 
  */
@@ -20,18 +22,23 @@ class AOT_API AHookProjectile : public AAoTProjectile
 public:
 	AHookProjectile();
 
-	UPROPERTY(BlueprintReadOnly)
-	TObjectPtr<UHookAbility> OwningAbility;
-
 	/* Tag for socket From which it was fired */
 	UPROPERTY(BlueprintReadOnly)
 	FGameplayTag FireSocket;
+
+	UPROPERTY(BlueprintReadOnly)
+	bool bIsLeftSocket;
 
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
 	void ReturnToOwner();
 
 	UFUNCTION(BlueprintCallable)
 	void PrematureReturn();
+
+	FHookLocationReceived HookLocationReceivedDelegate;
+
+	UPROPERTY(BlueprintCallable)
+	FHookRetunedToOwner HookRetunedToOwnerDelegate;
 
 protected:
 

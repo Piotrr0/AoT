@@ -7,6 +7,7 @@
 
 AHookProjectile::AHookProjectile()
 {
+
 }
 
 void AHookProjectile::PrematureReturn()
@@ -20,6 +21,14 @@ void AHookProjectile::PrematureReturn()
 void AHookProjectile::BeginPlay()
 {
 	Super::BeginPlay();
+	if (FireSocket.MatchesTagExact(FAoTGameplayTags::Get().CombatSocket_LeftGear))
+	{
+		bIsLeftSocket = true;
+	}
+	else
+	{
+		bIsLeftSocket = false;
+	}
 }
 
 void AHookProjectile::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
@@ -27,14 +36,7 @@ void AHookProjectile::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, 
 	Super::OnSphereOverlap(OverlappedComponent, OtherActor, OtherComp, OtherBodyIndex, bFromSweep, SweepResult);
 	if (OtherActor)
 	{
-		if (FireSocket.MatchesTagExact(FAoTGameplayTags::Get().CombatSocket_LeftGear))
-		{
-			OwningAbility->bLeftHookHit = true;
-		}
-		else
-		{
-			OwningAbility->bRightHookHit = true;
-		}
 		bLocationFound = true;
+		HookLocationReceivedDelegate.Broadcast(bIsLeftSocket, SweepResult);
 	}
 }

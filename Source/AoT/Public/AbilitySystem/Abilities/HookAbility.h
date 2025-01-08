@@ -43,6 +43,8 @@ public:
 	UPROPERTY(BlueprintReadWrite)
 	bool bRightHookHit;
 
+	void BindCallbacksToDependencies();
+
 protected:
 
 	UFUNCTION(BlueprintCallable)
@@ -51,6 +53,11 @@ protected:
 	UFUNCTION(BlueprintCallable)
 	FHookSpawnParams CalculateHookSpawnParams(const FGameplayTag& GearTag);
 
+	UFUNCTION()
+	void HandleReceivedHookLocation(bool bForLeft, const FHitResult& HitResult);
+	UFUNCTION()
+	void HandleHookReturn(bool bForLeft);
+		
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<AHookProjectile> HookClass;
 
