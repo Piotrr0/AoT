@@ -10,6 +10,9 @@
 #include "AbilitySystem/AoTGameplayAbility.h"
 #include "AbilitySystem/Abilities/HookAbility.h"
 #include "AoTGameplayTags.h"
+#include "Interfaces/PlayerInterface.h"
+#include "Interfaces/CombatInterface.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 
 void AAoTPlayerController::BeginPlay()
@@ -37,6 +40,7 @@ void AAoTPlayerController::SetupInputComponent()
 		AoTInputComponent->BindAction(LeftAction, ETriggerEvent::Completed, this, &AAoTPlayerController::LeftMouseButtonReleased);
 		AoTInputComponent->BindAction(RightAction, ETriggerEvent::Completed, this, &AAoTPlayerController::RightMouseButtonReleased);
 
+		AoTInputComponent->BindAction(JumpOrBoostAction, ETriggerEvent::Started, this, &AAoTPlayerController::JumpOrBoostButtonPressed);
 
 
 		AoTInputComponent->BindAbilityActions(InputConfig, this, &ThisClass::AbilityInputTagPressed, &ThisClass::AbilityInputTagReleased, &ThisClass::AbilityInputTagHeld);
@@ -108,6 +112,21 @@ void AAoTPlayerController::RightMouseButtonReleased()
 	if (UAbilitySystemComponent* ASC = GetASC())
 	{
 		ASC->HandleGameplayEvent(FAoTGameplayTags::Get().Events_RightHookReleased, &RightHookReleaseEventData);
+	}
+}
+
+void AAoTPlayerController::JumpOrBoostButtonPressed()
+{
+	if (GetPawn<APawn>()->Implements<UPlayerInterface>() && GetPawn<APawn>()->Implements<UCombatInterface>())
+	{
+		if (!ICombatInterface::Execute_GetMovement(GetPawn<APawn>())->IsMovingOnGround() || IPlayerInterface::Execute_GetHookHit(GetPawn<APawn>()))
+		{
+			bool bActivated = GetASC()->TryActivateAbilitiesByTag(FAoTGameplayTags::Get().Abilities_Boost.GetSingleTagContainer());
+		}
+		else
+		{
+			bool bActivated = GetASC()->TryActivateAbilitiesByTag(FAoTGameplayTags::Get().Abilities_Jump.GetSingleTagContainer());
+		}
 	}
 }
 

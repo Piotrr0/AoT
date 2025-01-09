@@ -12,6 +12,7 @@ class UAbilitySystemComponent;
 class UAttributeSet;
 class UGameplayEffect;
 class UGameplayAbility;
+class UCharacterMovementComponent;
 
 UCLASS()
 class AOT_API AAoTCharacterBase : public ACharacter, public IAbilitySystemInterface, public ICombatInterface
@@ -26,6 +27,8 @@ public:
 
 	/*Combat Interface*/
 	virtual FVector GetCombatSocketLocation_Implementation(const FGameplayTag& CombatSocketTag) const;
+	virtual UCharacterMovementComponent* GetMovement_Implementation() const;
+
 
 protected:
 	virtual void BeginPlay() override;

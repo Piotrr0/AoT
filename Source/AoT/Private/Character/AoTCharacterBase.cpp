@@ -4,6 +4,7 @@
 #include "Character/AoTCharacterBase.h"
 #include "AbilitySystem/AoTAbilitySystemComponent.h"
 #include "AoTGameplayTags.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 AAoTCharacterBase::AAoTCharacterBase()
 {
@@ -40,6 +41,11 @@ FVector AAoTCharacterBase::GetCombatSocketLocation_Implementation(const FGamepla
 		return GetMesh()->GetSocketLocation("RightGear_Socket");
 	}
 	return FVector();
+}
+
+UCharacterMovementComponent* AAoTCharacterBase::GetMovement_Implementation() const
+{
+	return GetCharacterMovement();
 }
 
 void AAoTCharacterBase::BeginPlay()

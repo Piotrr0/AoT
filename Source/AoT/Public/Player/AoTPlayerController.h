@@ -34,6 +34,8 @@ protected:
 	void LeftMouseButtonReleased();
 	void RightMouseButtonReleased();
 
+	void JumpOrBoostButtonPressed();
+
 private:
 
 	void AbilityInputTagPressed(FGameplayTag InputTag);
@@ -56,6 +58,9 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "Input")
 	TObjectPtr<UInputAction> RightAction;
+
+	UPROPERTY(EditAnywhere, Category = "Input")
+	TObjectPtr<UInputAction> JumpOrBoostAction;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	TObjectPtr<UAoTInputConfig> InputConfig;

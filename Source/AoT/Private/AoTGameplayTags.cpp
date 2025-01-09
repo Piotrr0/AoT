@@ -20,5 +20,7 @@ void FAoTGameplayTags::InitNativeGameplayTags()
 	GameplayTags.Events_RightHookReleased = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Events.RightHookReleased"), FString("Right Hook Released"));
 
 	GameplayTags.Abilities_Hook = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Abilities.Hook"), FString("Hook Ability"));
+	GameplayTags.Abilities_Boost = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Abilities.Boost"), FString("Boost Ability"));
+	GameplayTags.Abilities_Jump = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Abilities.Jump"), FString("Jump Ability"));
 
 }

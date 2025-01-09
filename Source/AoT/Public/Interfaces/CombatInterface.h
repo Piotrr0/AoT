@@ -7,6 +7,8 @@
 #include "GameplayTagContainer.h"
 #include "CombatInterface.generated.h"
 
+class UCharacterMovementComponent;
+
 // This class does not need to be modified.
 UINTERFACE(MinimalAPI)
 class UCombatInterface : public UInterface
@@ -26,5 +28,8 @@ public:
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	FVector GetCombatSocketLocation(const FGameplayTag& CombatSocketTag) const;
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	UCharacterMovementComponent* GetMovement() const;
 
 };

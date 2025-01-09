@@ -22,6 +22,7 @@ public:
 	void AbilityInputTagPressed(const FGameplayTag& InputTag);
 	void AbilityInputTagHeld(const FGameplayTag& InputTag);
 	void AbilityInputTagReleased(const FGameplayTag& InputTag);
-	UGameplayAbility* GetAbilityByAbilityTag(const FGameplayTag& AbilityTag);
+	UGameplayAbility* GetAbilityByTag(const FGameplayTag& AbilityTag);
+	UGameplayAbility* GetAbilityInstanceByTag(const FGameplayTag& AbilityTag);
 
 };

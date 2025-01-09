@@ -73,7 +73,7 @@ void UAoTAbilitySystemComponent::AbilityInputTagReleased(const FGameplayTag& Inp
 	}
 }
 
-UGameplayAbility* UAoTAbilitySystemComponent::GetAbilityByAbilityTag(const FGameplayTag& AbilityTag)
+UGameplayAbility* UAoTAbilitySystemComponent::GetAbilityByTag(const FGameplayTag& AbilityTag)
 {
 	FScopedAbilityListLock ActiveScopeLoc(*this);
 	for (FGameplayAbilitySpec& AbilitySpec : GetActivatableAbilities())
@@ -82,7 +82,27 @@ UGameplayAbility* UAoTAbilitySystemComponent::GetAbilityByAbilityTag(const FGame
 		{
 			if (Tag.MatchesTag(AbilityTag))
 			{
-				return AbilitySpec.Ability;
+				return AbilitySpec.Ability.Get();
+			}
+		}
+	}
+	return nullptr;
+}
+
+UGameplayAbility* UAoTAbilitySystemComponent::GetAbilityInstanceByTag(const FGameplayTag& AbilityTag)
+{
+	FScopedAbilityListLock ActiveScopeLock(*this);
+	for (const FGameplayAbilitySpec& AbilitySpec : GetActivatableAbilities())
+	{
+		TArray<UGameplayAbility*> Instances = AbilitySpec.GetAbilityInstances();
+		for (UGameplayAbility* Instance : Instances)
+		{
+			for (FGameplayTag Tag : Instance->AbilityTags)
+			{
+				if (Tag.MatchesTag(AbilityTag))
+				{
+					return Instance;
+				}
 			}
 		}
 	}

@@ -30,5 +30,8 @@ public:
 	bool GetRightHookHit();
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	bool GetHookHit();
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	FVector GetHookPositionFromAnchors();
 };

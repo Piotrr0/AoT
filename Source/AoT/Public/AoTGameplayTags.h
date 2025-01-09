@@ -27,6 +27,8 @@ public:
 	FGameplayTag Events_RightHookReleased;
 	
 	FGameplayTag Abilities_Hook;
+	FGameplayTag Abilities_Boost;
+	FGameplayTag Abilities_Jump;
 
 private:
 

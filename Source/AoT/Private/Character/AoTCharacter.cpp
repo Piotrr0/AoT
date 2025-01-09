@@ -22,9 +22,9 @@ bool AAoTCharacter::GetLeftHookHit_Implementation()
 {
 	if (UAoTAbilitySystemComponent* AoTASC = Cast<UAoTAbilitySystemComponent>(AbilitySystemComponent))
 	{
-		if (const UHookAbility* HookAbility = Cast<UHookAbility>(AoTASC->GetAbilityByAbilityTag(FAoTGameplayTags::Get().Abilities_Hook)))
+		if (const UHookAbility* HookAbility = Cast<UHookAbility>(AoTASC->GetAbilityInstanceByTag(FAoTGameplayTags::Get().Abilities_Hook)))
 		{
-			HookAbility->bLeftHookHit;
+			return HookAbility->bLeftHookHit;
 		}
 	}
 	return false;
@@ -34,9 +34,21 @@ bool AAoTCharacter::GetRightHookHit_Implementation()
 {
 	if (UAoTAbilitySystemComponent* AoTASC = Cast<UAoTAbilitySystemComponent>(AbilitySystemComponent))
 	{
-		if (const UHookAbility* HookAbility = Cast<UHookAbility>(AoTASC->GetAbilityByAbilityTag(FAoTGameplayTags::Get().Abilities_Hook)))
+		if (const UHookAbility* HookAbility = Cast<UHookAbility>(AoTASC->GetAbilityInstanceByTag(FAoTGameplayTags::Get().Abilities_Hook)))
 		{
-			HookAbility->bRightHookHit;
+			return HookAbility->bRightHookHit;
+		}
+	}
+	return false;
+}
+
+bool AAoTCharacter::GetHookHit_Implementation()
+{
+	if (UAoTAbilitySystemComponent* AoTASC = Cast<UAoTAbilitySystemComponent>(AbilitySystemComponent))
+	{
+		if (const UHookAbility* HookAbility = Cast<UHookAbility>(AoTASC->GetAbilityInstanceByTag(FAoTGameplayTags::Get().Abilities_Hook)))
+		{
+			return HookAbility->bRightHookHit || HookAbility->bLeftHookHit;
 		}
 	}
 	return false;
@@ -46,7 +58,7 @@ FVector AAoTCharacter::GetHookPositionFromAnchors_Implementation()
 {
 	if (UAoTAbilitySystemComponent* AoTASC = Cast<UAoTAbilitySystemComponent>(AbilitySystemComponent))
 	{
-		if (const UHookAbility* HookAbility = Cast<UHookAbility>(AoTASC->GetAbilityByAbilityTag(FAoTGameplayTags::Get().Abilities_Hook)))
+		if (const UHookAbility* HookAbility = Cast<UHookAbility>(AoTASC->GetAbilityInstanceByTag(FAoTGameplayTags::Get().Abilities_Hook)))
 		{
 			return HookAbility->GetHookPositionFromAnchors();
 		}
