@@ -28,6 +28,15 @@ void AAoTCharacterBase::InitDefaultAbilities() const
 	AoTASC->AddCharacterAbilities(DefaultAbilities);
 }
 
+UAoTAbilitySystemComponent* AAoTCharacterBase::GetASC()
+{
+	if (AoTAbilitySystemComponent == nullptr)
+	{
+		AoTAbilitySystemComponent = Cast<UAoTAbilitySystemComponent>(AbilitySystemComponent);
+	}
+	return AoTAbilitySystemComponent;
+}
+
 FVector AAoTCharacterBase::GetCombatSocketLocation_Implementation(const FGameplayTag& CombatSocketTag) const
 {
 	FAoTGameplayTags GameplayTags = FAoTGameplayTags::Get();

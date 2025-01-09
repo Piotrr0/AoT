@@ -21,60 +21,45 @@ void AAoTCharacter::PossessedBy(AController* NewController)
 
 bool AAoTCharacter::GetLeftHookHit_Implementation()
 {
-	if (UAoTAbilitySystemComponent* AoTASC = Cast<UAoTAbilitySystemComponent>(AbilitySystemComponent))
+	if (const UHookAbility* HookAbility = Cast<UHookAbility>(GetASC()->GetAbilityInstanceByTag(FAoTGameplayTags::Get().Abilities_Hook)))
 	{
-		if (const UHookAbility* HookAbility = Cast<UHookAbility>(AoTASC->GetAbilityInstanceByTag(FAoTGameplayTags::Get().Abilities_Hook)))
-		{
-			return HookAbility->bLeftHookHit;
-		}
+		return HookAbility->bLeftHookHit;
 	}
 	return false;
 }
 
 bool AAoTCharacter::GetRightHookHit_Implementation()
 {
-	if (UAoTAbilitySystemComponent* AoTASC = Cast<UAoTAbilitySystemComponent>(AbilitySystemComponent))
+	if (const UHookAbility* HookAbility = Cast<UHookAbility>(GetASC()->GetAbilityInstanceByTag(FAoTGameplayTags::Get().Abilities_Hook)))
 	{
-		if (const UHookAbility* HookAbility = Cast<UHookAbility>(AoTASC->GetAbilityInstanceByTag(FAoTGameplayTags::Get().Abilities_Hook)))
-		{
-			return HookAbility->bRightHookHit;
-		}
+		return HookAbility->bRightHookHit;
 	}
 	return false;
 }
 
 bool AAoTCharacter::GetHookHit_Implementation()
 {
-	if (UAoTAbilitySystemComponent* AoTASC = Cast<UAoTAbilitySystemComponent>(AbilitySystemComponent))
+	if (const UHookAbility* HookAbility = Cast<UHookAbility>(GetASC()->GetAbilityInstanceByTag(FAoTGameplayTags::Get().Abilities_Hook)))
 	{
-		if (const UHookAbility* HookAbility = Cast<UHookAbility>(AoTASC->GetAbilityInstanceByTag(FAoTGameplayTags::Get().Abilities_Hook)))
-		{
-			return HookAbility->bRightHookHit || HookAbility->bLeftHookHit;
-		}
+		return HookAbility->bRightHookHit || HookAbility->bLeftHookHit;
 	}
 	return false;
 }
 
 bool AAoTCharacter::GetIsBoosting_Implementation()
 {
-	if (UAoTAbilitySystemComponent* AoTASC = Cast<UAoTAbilitySystemComponent>(AbilitySystemComponent))
+	if (const UBoostAbility* BoostAbility = Cast<UBoostAbility>(GetASC()->GetAbilityInstanceByTag(FAoTGameplayTags::Get().Abilities_Boost)))
 	{
-		if (const UBoostAbility* BoostAbility = Cast<UBoostAbility>(AoTASC->GetAbilityInstanceByTag(FAoTGameplayTags::Get().Abilities_Boost)))
-		{
-			return BoostAbility->bIsBoosting;
-		}
+		return BoostAbility->bIsBoosting;
 	}
 	return false;
 }
 
 FVector AAoTCharacter::GetHookPositionFromAnchors_Implementation()
 {
-	if (UAoTAbilitySystemComponent* AoTASC = Cast<UAoTAbilitySystemComponent>(AbilitySystemComponent))
+	if (const UHookAbility* HookAbility = Cast<UHookAbility>(GetASC()->GetAbilityInstanceByTag(FAoTGameplayTags::Get().Abilities_Hook)))
 	{
-		if (const UHookAbility* HookAbility = Cast<UHookAbility>(AoTASC->GetAbilityInstanceByTag(FAoTGameplayTags::Get().Abilities_Hook)))
-		{
-			return HookAbility->GetHookPositionFromAnchors();
-		}
+		return HookAbility->GetHookPositionFromAnchors();
 	}
 	return FVector::ZeroVector;
 }

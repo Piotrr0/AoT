@@ -9,6 +9,7 @@
 #include "AoTCharacterBase.generated.h"
 
 class UAbilitySystemComponent;
+class UAoTAbilitySystemComponent;
 class UAttributeSet;
 class UGameplayEffect;
 class UGameplayAbility;
@@ -24,6 +25,7 @@ public:
 	UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 	void InitDefaultAttributes() const;
 	void InitDefaultAbilities() const;
+	UAoTAbilitySystemComponent* GetASC();
 
 	/*Combat Interface*/
 	virtual FVector GetCombatSocketLocation_Implementation(const FGameplayTag& CombatSocketTag) const;
@@ -37,6 +39,9 @@ protected:
 
 	UPROPERTY()
 	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;
+
+	UPROPERTY()
+	TObjectPtr<UAoTAbilitySystemComponent> AoTAbilitySystemComponent;
 
 	UPROPERTY()
 	TObjectPtr<UAttributeSet> AttributeSet;
