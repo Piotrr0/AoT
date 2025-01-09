@@ -124,7 +124,6 @@ void AAoTPlayerController::JumpOrBoostButtonPressed()
 		if (!ICombatInterface::Execute_GetMovement(GetPawn<APawn>())->IsMovingOnGround() && IPlayerInterface::Execute_GetHookHit(GetPawn<APawn>()))
 		{
  			GetASC()->TryActivateAbilitiesByTag(FAoTGameplayTags::Get().Abilities_Boost.GetSingleTagContainer());
-			bBoosting = true;
 		}
 		else
 		{
@@ -135,7 +134,7 @@ void AAoTPlayerController::JumpOrBoostButtonPressed()
 
 void AAoTPlayerController::JumpOrBoostButtonReleased()
 {
-	if (bBoosting)
+	if (GetPawn<APawn>()->Implements<UPlayerInterface>() && IPlayerInterface::Execute_GetIsBoosting(GetPawn<APawn>()))
 	{
 		FGameplayEventData StopBoostingEventData;
 

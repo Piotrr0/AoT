@@ -11,6 +11,7 @@ void UBoostAbility::ApplyBoost()
 	AActor* AvatarActor = GetAvatarActorFromActorInfo();
 	if (AvatarActor->Implements<UPlayerInterface>() && AvatarActor->Implements<UCombatInterface>())
 	{
+		bIsBoosting = true;
 		const FVector Direction = (IPlayerInterface::Execute_GetHookPositionFromAnchors(AvatarActor) - AvatarActor->GetActorLocation()).GetSafeNormal();
 		ICombatInterface::Execute_GetMovement(AvatarActor)->AddImpulse(Direction * StartBoostForce);
 	}

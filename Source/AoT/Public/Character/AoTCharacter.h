@@ -23,6 +23,7 @@ public:
 	virtual bool GetLeftHookHit_Implementation() override;
 	virtual bool GetRightHookHit_Implementation() override;
 	virtual bool GetHookHit_Implementation() override;
+	virtual bool GetIsBoosting_Implementation() override;
 	virtual FVector GetHookPositionFromAnchors_Implementation() override;
 
 protected:

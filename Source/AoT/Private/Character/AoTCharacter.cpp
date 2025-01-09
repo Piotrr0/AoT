@@ -6,6 +6,7 @@
 #include "AoTGameplayTags.h"
 #include "AbilitySystem/AoTAbilitySystemComponent.h"
 #include "AbilitySystem/Abilities/HookAbility.h"
+#include "AbilitySystem/Abilities/BoostAbility.h"
 
 AAoTCharacter::AAoTCharacter()
 {
@@ -49,6 +50,18 @@ bool AAoTCharacter::GetHookHit_Implementation()
 		if (const UHookAbility* HookAbility = Cast<UHookAbility>(AoTASC->GetAbilityInstanceByTag(FAoTGameplayTags::Get().Abilities_Hook)))
 		{
 			return HookAbility->bRightHookHit || HookAbility->bLeftHookHit;
+		}
+	}
+	return false;
+}
+
+bool AAoTCharacter::GetIsBoosting_Implementation()
+{
+	if (UAoTAbilitySystemComponent* AoTASC = Cast<UAoTAbilitySystemComponent>(AbilitySystemComponent))
+	{
+		if (const UBoostAbility* BoostAbility = Cast<UBoostAbility>(AoTASC->GetAbilityInstanceByTag(FAoTGameplayTags::Get().Abilities_Boost)))
+		{
+			return BoostAbility->bIsBoosting;
 		}
 	}
 	return false;

@@ -22,10 +22,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	float StartBoostForce = 1000.f;
 
+	UPROPERTY(BlueprintReadWrite)
+	bool bIsBoosting = false;
 protected:
 
 	UFUNCTION(BlueprintCallable)
 	void ApplyBoost();
-
-
 };
