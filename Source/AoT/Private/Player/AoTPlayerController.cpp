@@ -41,6 +41,8 @@ void AAoTPlayerController::SetupInputComponent()
 		AoTInputComponent->BindAction(RightAction, ETriggerEvent::Completed, this, &AAoTPlayerController::RightMouseButtonReleased);
 
 		AoTInputComponent->BindAction(JumpOrBoostAction, ETriggerEvent::Started, this, &AAoTPlayerController::JumpOrBoostButtonPressed);
+		AoTInputComponent->BindAction(JumpOrBoostAction, ETriggerEvent::Completed, this, &AAoTPlayerController::JumpOrBoostButtonReleased);
+
 
 
 		AoTInputComponent->BindAbilityActions(InputConfig, this, &ThisClass::AbilityInputTagPressed, &ThisClass::AbilityInputTagReleased, &ThisClass::AbilityInputTagHeld);
@@ -119,13 +121,27 @@ void AAoTPlayerController::JumpOrBoostButtonPressed()
 {
 	if (GetPawn<APawn>()->Implements<UPlayerInterface>() && GetPawn<APawn>()->Implements<UCombatInterface>())
 	{
-		if (!ICombatInterface::Execute_GetMovement(GetPawn<APawn>())->IsMovingOnGround() || IPlayerInterface::Execute_GetHookHit(GetPawn<APawn>()))
+		if (!ICombatInterface::Execute_GetMovement(GetPawn<APawn>())->IsMovingOnGround() && IPlayerInterface::Execute_GetHookHit(GetPawn<APawn>()))
 		{
-			bool bActivated = GetASC()->TryActivateAbilitiesByTag(FAoTGameplayTags::Get().Abilities_Boost.GetSingleTagContainer());
+ 			GetASC()->TryActivateAbilitiesByTag(FAoTGameplayTags::Get().Abilities_Boost.GetSingleTagContainer());
+			bBoosting = true;
 		}
 		else
 		{
-			bool bActivated = GetASC()->TryActivateAbilitiesByTag(FAoTGameplayTags::Get().Abilities_Jump.GetSingleTagContainer());
+			GetASC()->TryActivateAbilitiesByTag(FAoTGameplayTags::Get().Abilities_Jump.GetSingleTagContainer());
+		}
+	}
+}
+
+void AAoTPlayerController::JumpOrBoostButtonReleased()
+{
+	if (bBoosting)
+	{
+		FGameplayEventData StopBoostingEventData;
+
+		if (UAbilitySystemComponent* ASC = GetASC())
+		{
+			ASC->HandleGameplayEvent(FAoTGameplayTags::Get().Events_StopBoosting, &StopBoostingEventData);
 		}
 	}
 }

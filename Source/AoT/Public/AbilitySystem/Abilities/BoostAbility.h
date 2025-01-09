@@ -22,4 +22,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	float StartBoostForce = 1000.f;
 
+protected:
+
+	UFUNCTION(BlueprintCallable)
+	void ApplyBoost();
+
+
 };

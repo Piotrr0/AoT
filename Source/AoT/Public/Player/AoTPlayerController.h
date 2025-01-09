@@ -35,6 +35,9 @@ protected:
 	void RightMouseButtonReleased();
 
 	void JumpOrBoostButtonPressed();
+	void JumpOrBoostButtonReleased();
+
+	bool bBoosting;
 
 private:
 

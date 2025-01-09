@@ -25,6 +25,7 @@ public:
 	FGameplayTag Events_RightHookFired;
 	FGameplayTag Events_LeftHookReleased;
 	FGameplayTag Events_RightHookReleased;
+	FGameplayTag Events_StopBoosting;
 	
 	FGameplayTag Abilities_Hook;
 	FGameplayTag Abilities_Boost;
