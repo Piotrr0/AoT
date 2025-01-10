@@ -3,6 +3,7 @@
 
 #include "Movement/AoTCharacterMovementComponent.h"
 #include "Interfaces/PlayerInterface.h"
+#include "Kismet/KismetMathLibrary.h"
 
 void UAoTCharacterMovementComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
@@ -25,6 +26,7 @@ void UAoTCharacterMovementComponent::AddAirForces()
         if (bIsBoosting && bHookHit)
         {
             const FVector BoostForce = CalculateBoostForce();
+            AddForce(BoostForce * BoostForceMultiplier);
         }
 
         if (IsMovingOnGround() && !bIsBoosting && bHookHit)
@@ -36,7 +38,14 @@ void UAoTCharacterMovementComponent::AddAirForces()
 
 FVector UAoTCharacterMovementComponent::CalculateBoostForce()
 {
-    return FVector::ZeroVector;
+    const FVector OwnerLocation = GetOwner()->GetActorLocation();
+    const FVector HookPosition = IPlayerInterface::Execute_GetHookPositionFromAnchors(GetOwner());
+
+    const FVector Direction = (HookPosition - GetOwner()->GetActorLocation()).GetSafeNormal();
+    const float Distance = FVector::Dist(OwnerLocation, HookPosition);
+    const float BoostMagnitude = UKismetMathLibrary::MapRangeClamped(Distance, 0.f, 4000.f, 200000.f, 400000.f);
+
+    return (Direction * BoostMagnitude) + FVector(0.f, 0.f, 60000.f);
 }
 
 FVector UAoTCharacterMovementComponent::CalculateSwingForce()

@@ -20,8 +20,8 @@ public:
 	UAoTCharacterMovementComponent();
 	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
-	float BoostForceMultiplier = 1.5f;
-	float SwingForceMultiplier = 1.5f;
+	float BoostForceMultiplier = 1.f;
+	float SwingForceMultiplier = 1.f;
 	
 protected:
 
