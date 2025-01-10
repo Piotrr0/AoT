@@ -6,6 +6,8 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "AoTCharacterMovementComponent.generated.h"
 
+class IPlayerInterface;
+
 /**
  * 
  */
@@ -15,10 +17,18 @@ class AOT_API UAoTCharacterMovementComponent : public UCharacterMovementComponen
 	GENERATED_BODY()
 
 public:
+	UAoTCharacterMovementComponent();
 	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+
+	float BoostForceMultiplier = 1.5f;
+	float SwingForceMultiplier = 1.5f;
 	
 protected:
 
-	void CalculateAirForces();
+	void AddAirForces();
+private:
+
+	FVector CalculateBoostForce();
+	FVector CalculateSwingForce();
 
 };
