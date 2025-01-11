@@ -28,7 +28,7 @@ protected:
 	void AddAirForces();
 private:
 
-	FVector CalculateBoostForce();
-	FVector CalculateSwingForce();
+	FVector CalculateBoostForce() const;
+	FVector CalculateSwingForce() const;
 
 };

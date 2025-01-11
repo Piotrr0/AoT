@@ -36,19 +36,38 @@ void UAoTCharacterMovementComponent::AddAirForces()
     }
 }
 
-FVector UAoTCharacterMovementComponent::CalculateBoostForce()
+FVector UAoTCharacterMovementComponent::CalculateBoostForce() const
 {
     const FVector OwnerLocation = GetOwner()->GetActorLocation();
     const FVector HookPosition = IPlayerInterface::Execute_GetHookPositionFromAnchors(GetOwner());
 
-    const FVector Direction = (HookPosition - GetOwner()->GetActorLocation()).GetSafeNormal();
+    const FVector Direction = (HookPosition - OwnerLocation).GetSafeNormal();
     const float Distance = FVector::Dist(OwnerLocation, HookPosition);
-    const float BoostMagnitude = UKismetMathLibrary::MapRangeClamped(Distance, 0.f, 4000.f, 200000.f, 400000.f);
+    const float BoostScale = UKismetMathLibrary::MapRangeClamped(Distance, 0.f, 4000.f, 200000.f, 400000.f);
 
-    return (Direction * BoostMagnitude) + FVector(0.f, 0.f, 60000.f);
+    return (Direction * BoostScale) + FVector(0.f, 0.f, 60000.f);
 }
 
-FVector UAoTCharacterMovementComponent::CalculateSwingForce()
+FVector UAoTCharacterMovementComponent::CalculateSwingForce() const
 {
+    const FVector OwnerLocation = GetOwner()->GetActorLocation();
+    const FVector HookPosition = IPlayerInterface::Execute_GetHookPositionFromAnchors(GetOwner());
+
+    const FVector Direction = (HookPosition - OwnerLocation).GetSafeNormal();
+    const FVector HookApproachVelocity = UKismetMathLibrary::Vector_ClampSize2D(Velocity, 400.f, 1200.f);
+    const float HookMotionAlignment = FVector::DotProduct(HookApproachVelocity, Direction);
+
+    FVector SwingForce = (Direction * HookMotionAlignment) * -2.f;
+
+    const float ZOffset = HookPosition.Z - OwnerLocation.Z;
+    const float HeightAdjustmentScale = UKismetMathLibrary::MapRangeClamped(ZOffset, -1000.f, 0.f, 0.75f, 1.f);
+    SwingForce *= HeightAdjustmentScale;
+
+    const float SwingForceAlignmentFactor = FVector::DotProduct(-Direction, SwingForce.GetSafeNormal());
+    if (UKismetMathLibrary::NearlyEqual_FloatFloat(SwingForceAlignmentFactor, 1.f, 0.1f))
+    {
+        return SwingForce;
+    }
+
     return FVector::ZeroVector;
 }
