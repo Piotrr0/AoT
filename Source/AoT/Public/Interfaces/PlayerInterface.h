@@ -13,6 +13,8 @@ class UPlayerInterface : public UInterface
 	GENERATED_BODY()
 };
 
+class UCableComponent;
+
 /**
  * 
  */
@@ -37,4 +39,10 @@ public:
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	FVector GetHookPositionFromAnchors();
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	UCableComponent* GetLeftCable();
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	UCableComponent* GetRightCable();
 };

@@ -8,6 +8,8 @@
 
 #include "AoTCharacter.generated.h"
 
+class UCableComponent;
+
 /**
  * 
  */
@@ -25,10 +27,18 @@ public:
 	virtual bool GetHookHit_Implementation() override;
 	virtual bool GetIsBoosting_Implementation() override;
 	virtual FVector GetHookPositionFromAnchors_Implementation() override;
+	virtual UCableComponent* GetLeftCable_Implementation() override;
+	virtual UCableComponent* GetRightCable_Implementation() override;
 
 protected:
 
 	void InitAbilityActorInfo() override;
+
+	UPROPERTY(BlueprintReadOnly, EditAnywhere)
+	TObjectPtr<UCableComponent> LeftCable;
+
+	UPROPERTY(BlueprintReadOnly, EditAnywhere)
+	TObjectPtr<UCableComponent> RightCable;
 
 private:
 

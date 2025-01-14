@@ -7,10 +7,13 @@
 #include "AbilitySystem/AoTAbilitySystemComponent.h"
 #include "AbilitySystem/Abilities/HookAbility.h"
 #include "AbilitySystem/Abilities/BoostAbility.h"
+#include "CableComponent.h"
+
 
 AAoTCharacter::AAoTCharacter()
 {
-
+	LeftCable = CreateDefaultSubobject<UCableComponent>(FName("LeftCable"));
+	RightCable = CreateDefaultSubobject<UCableComponent>(FName("RightCable"));
 }
 
 void AAoTCharacter::PossessedBy(AController* NewController)
@@ -62,6 +65,16 @@ FVector AAoTCharacter::GetHookPositionFromAnchors_Implementation()
 		return HookAbility->GetHookPositionFromAnchors();
 	}
 	return FVector::ZeroVector;
+}
+
+UCableComponent* AAoTCharacter::GetLeftCable_Implementation()
+{
+	return LeftCable;
+}
+
+UCableComponent* AAoTCharacter::GetRightCable_Implementation()
+{
+	return RightCable;
 }
 
 void AAoTCharacter::InitAbilityActorInfo()
