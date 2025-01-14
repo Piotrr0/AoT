@@ -56,7 +56,7 @@ protected:
 	void ReleaseHook(const FGameplayTag& GearTag);
 
 	UFUNCTION(BlueprintCallable)
-	FHookSpawnParams CalculateHookSpawnParams(const FGameplayTag& GearTag);
+	FHookSpawnParams CalculateHookSpawnParams(const FGameplayTag& GearTag) const;
 
 	UFUNCTION()
 	void HandleReceivedHookLocation(const FGameplayTag& GearTag, const FHitResult& HitResult);

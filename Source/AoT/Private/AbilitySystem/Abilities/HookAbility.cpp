@@ -85,7 +85,7 @@ void UHookAbility::ReleaseHook(const FGameplayTag& GearTag)
 	}
 }
 
-FHookSpawnParams UHookAbility::CalculateHookSpawnParams(const FGameplayTag& GearTag)
+FHookSpawnParams UHookAbility::CalculateHookSpawnParams(const FGameplayTag& GearTag) const
 {
 	FHookSpawnParams Params;
 
