@@ -9,8 +9,24 @@
 
 class UHookAbility;
 
-DECLARE_MULTICAST_DELEGATE_TwoParams(FHookLocationReceived, const FGameplayTag&, const FHitResult&);
+USTRUCT(BlueprintType)
+struct FHookHitParams
+{
+	GENERATED_BODY()
+
+	UPROPERTY(VisibleAnywhere)
+	FVector Impact;
+
+	UPROPERTY(VisibleAnywhere)
+	FVector Normal;
+
+	UPROPERTY(VisibleAnywhere)
+	FVector Tangent;
+};
+
+DECLARE_MULTICAST_DELEGATE_TwoParams(FHookLocationReceived, const FGameplayTag&, const FHookHitParams&);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FHookRetunedToOwner, const FGameplayTag&, FireSocket);
+
 /**
  * 
  */
@@ -21,6 +37,7 @@ class AOT_API AHookProjectile : public AAoTProjectile
 
 public:
 	AHookProjectile();
+	virtual void Tick(float DeltaTime) override;
 
 	/* Tag for socket From which it was fired */
 	UPROPERTY(BlueprintReadOnly)
@@ -41,13 +58,17 @@ protected:
 
 	virtual void BeginPlay() override;
 	virtual void OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) override;
+	void DetectRopeCollision();
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	float HookLifeTime = 1.5f;
 
 	UPROPERTY(BlueprintReadWrite) /* Set to false in ReturnToOwner event blueprint */
-	bool bLocationFound; /* Not set to false on hook realse */
+	bool bLocationFound = false; /* Not set to false on hook realse */
 
 	UPROPERTY(BlueprintReadWrite)
-	bool bReturning;
+	bool bReturning = false;
+
+	UPROPERTY(BlueprintReadOnly);
+	TArray<FHookHitParams> HitData;
 };

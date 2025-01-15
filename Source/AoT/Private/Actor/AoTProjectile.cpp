@@ -4,6 +4,7 @@
 #include "Actor/AoTProjectile.h"
 #include "Components/SphereComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
+#include "Kismet/GameplayStatics.h"
 #include "AoT/AoT.h"
 
 AAoTProjectile::AAoTProjectile()
@@ -23,6 +24,15 @@ AAoTProjectile::AAoTProjectile()
 	ProjectileMovement->InitialSpeed = 1000.f;
 	ProjectileMovement->MaxSpeed = 1000.f;
 	ProjectileMovement->ProjectileGravityScale = 0.f;
+}
+
+APawn* AAoTProjectile::GetPlayerPawn()
+{
+	if (PlayerPawn == nullptr)
+	{
+		PlayerPawn = UGameplayStatics::GetPlayerPawn(this, 0);
+	}
+	return PlayerPawn;
 }
 
 void AAoTProjectile::BeginPlay()

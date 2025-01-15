@@ -32,15 +32,15 @@ FVector UHookAbility::GetHookPositionFromAnchors() const
 {
 	if (bRightHookHit && bLeftHookHit)
 	{
-		return UKismetMathLibrary::VLerp(LeftHookResults.Last().ImpactPoint, RightHookResults.Last().ImpactPoint, 0.5f);
+		return UKismetMathLibrary::VLerp(LeftHookHitParams.Last().Impact, RightHookHitParams.Last().Impact, 0.5f);
 	}
 	if (bLeftHookHit)
 	{
-		return LeftHookResults.Last().ImpactPoint;
+		return LeftHookHitParams.Last().Impact;
 	}
 	if (bRightHookHit)
 	{
-		return RightHookResults.Last().ImpactPoint;
+		return RightHookHitParams.Last().Impact;
 	}
 	return FVector::ZeroVector;
 }
@@ -74,13 +74,13 @@ void UHookAbility::ReleaseHook(const FGameplayTag& GearTag)
 	if (GearTag.MatchesTagExact(FAoTGameplayTags::Get().CombatSocket_LeftGear))
 	{
 		LeftHook->ReturnToOwner();
-		LeftHookResults.Empty();
+		LeftHookHitParams.Empty();
 		bLeftHookHit = false;
 	}
 	else
 	{
 		RightHook->ReturnToOwner();
-		RightHookResults.Empty();
+		RightHookHitParams.Empty();
 		bRightHookHit = false;
 	}
 }
@@ -101,17 +101,17 @@ FHookSpawnParams UHookAbility::CalculateHookSpawnParams(const FGameplayTag& Gear
 	return Params;
 }
 
-void UHookAbility::HandleReceivedHookLocation(const FGameplayTag& GearTag, const FHitResult& HitResult)
+void UHookAbility::HandleReceivedHookLocation(const FGameplayTag& GearTag, const FHookHitParams& HitParams)
 {
 	if (GearTag.MatchesTagExact(FAoTGameplayTags::Get().CombatSocket_LeftGear))
 	{
 		bLeftHookHit = true;
-		LeftHookResults.Add(HitResult);
+		LeftHookHitParams.Add(HitParams);
 	}
 	else
 	{
 		bRightHookHit = true;
-		RightHookResults.Add(HitResult);
+		RightHookHitParams.Add(HitParams);
 	}
 }
 

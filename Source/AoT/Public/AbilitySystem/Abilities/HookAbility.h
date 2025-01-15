@@ -8,6 +8,7 @@
 #include "HookAbility.generated.h"
 
 class AHookProjectile;
+struct FHookHitParams;
 
 USTRUCT(BlueprintType)
 struct FHookSpawnParams
@@ -59,18 +60,15 @@ protected:
 	FHookSpawnParams CalculateHookSpawnParams(const FGameplayTag& GearTag) const;
 
 	UFUNCTION()
-	void HandleReceivedHookLocation(const FGameplayTag& GearTag, const FHitResult& HitResult);
+	void HandleReceivedHookLocation(const FGameplayTag& GearTag, const FHookHitParams& HitParams);
 	UFUNCTION()
 	void HandleHookReturn(const FGameplayTag& GearTag);
 		
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<AHookProjectile> HookClass;
 
-	UPROPERTY(BlueprintReadOnly)
-	TArray<FHitResult> LeftHookResults;
-
-	UPROPERTY(BlueprintReadOnly)
-	TArray<FHitResult> RightHookResults;
+	TArray<FHookHitParams> LeftHookHitParams;
+	TArray<FHookHitParams> RightHookHitParams;
 
 private:
 

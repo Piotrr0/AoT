@@ -6,11 +6,19 @@
 #include "AbilitySystem/Abilities/HookAbility.h"
 #include "Kismet/GameplayStatics.h"
 #include "Interfaces/PlayerInterface.h"
+#include "Interfaces/CombatInterface.h"
 #include "CableComponent.h"
+#include "Kismet/KismetMathLibrary.h"
 
 AHookProjectile::AHookProjectile()
 {
+	PrimaryActorTick.bCanEverTick = true;
+}
 
+void AHookProjectile::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+	DetectRopeCollision();
 }
 
 void AHookProjectile::PrematureReturn()
@@ -24,18 +32,17 @@ void AHookProjectile::PrematureReturn()
 void AHookProjectile::BeginPlay()
 {
 	Super::BeginPlay();
-	APawn* PlayerPawn = UGameplayStatics::GetPlayerPawn(this, 0);
-	if (PlayerPawn->Implements<UPlayerInterface>())
+	if (GetPlayerPawn()->Implements<UPlayerInterface>())
 	{
 		if (FireSocket.MatchesTagExact(FAoTGameplayTags::Get().CombatSocket_LeftGear))
 		{
-			UCableComponent* LeftCable = IPlayerInterface::Execute_GetLeftCable(PlayerPawn);
+			UCableComponent* LeftCable = IPlayerInterface::Execute_GetLeftCable(GetPlayerPawn());
 			LeftCable->SetVisibility(true);
 			LeftCable->SetAttachEndTo(this, FName(""));
 		}
 		else if (FireSocket.MatchesTagExact(FAoTGameplayTags::Get().CombatSocket_RightGear))
 		{
-			UCableComponent* RightCable = IPlayerInterface::Execute_GetRightCable(PlayerPawn);
+			UCableComponent* RightCable = IPlayerInterface::Execute_GetRightCable(GetPlayerPawn());
 			RightCable->SetVisibility(true);
 			RightCable->SetAttachEndTo(this, FName(""));
 		}
@@ -48,6 +55,42 @@ void AHookProjectile::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, 
 	if (OtherActor)
 	{
 		bLocationFound = true;
-		HookLocationReceivedDelegate.Broadcast(FireSocket, SweepResult);
+
+		FHookHitParams HitParams;
+		HitParams.Impact = SweepResult.ImpactPoint;
+		HitParams.Normal = SweepResult.ImpactNormal;
+		HitParams.Tangent = FVector::ZeroVector;
+
+		HitData.Add(HitParams);
+		HookLocationReceivedDelegate.Broadcast(FireSocket, HitParams);
+	}
+}
+
+void AHookProjectile::DetectRopeCollision()
+{
+	if (!HitData.IsEmpty() && GetPlayerPawn()->Implements<UCombatInterface>())
+	{
+		const FVector LastHitLocation = HitData.Last().Impact;
+		const FVector SocketLocation = ICombatInterface::Execute_GetCombatSocketLocation(GetPlayerPawn(), FireSocket);
+		const FVector End = UKismetMathLibrary::VLerp(SocketLocation, LastHitLocation, 0.95);
+
+		FHitResult HitResult;
+		GetWorld()->LineTraceSingleByChannel(HitResult, SocketLocation, End, ECollisionChannel::ECC_Visibility);
+		if (HitResult.bBlockingHit)
+		{
+			FHitResult ReverseHitResult;
+			GetWorld()->LineTraceSingleByChannel(ReverseHitResult, LastHitLocation, SocketLocation, ECollisionChannel::ECC_Visibility);
+
+			const FVector HookPointNormal = HitData.Last().Normal;
+			const FVector HookPointOffset = UKismetMathLibrary::VLerp(HitResult.ImpactNormal, HookPointNormal, 0.5);
+
+			FHookHitParams HookHitParams;
+			HookHitParams.Impact = HitResult.ImpactPoint + HookPointOffset;
+			HookHitParams.Normal = UKismetMathLibrary::VLerp(HitResult.Normal, ReverseHitResult.Normal, 0.5f).GetSafeNormal(0.0001f);
+			HookHitParams.Tangent = FVector::CrossProduct(HitResult.ImpactNormal, ReverseHitResult.ImpactNormal);
+
+			HitData.Add(HookHitParams);
+			HookLocationReceivedDelegate.Broadcast(FireSocket, HookHitParams);
+		}
 	}
 }

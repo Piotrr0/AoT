@@ -25,6 +25,9 @@ class AOT_API AAoTProjectile : public AActor
 public:	
 	AAoTProjectile();
 
+	APawn* GetPlayerPawn();
+
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -39,5 +42,8 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly)
 	EOverlapPolicy OverlapPolicy;
+
+private:
+	TObjectPtr<APawn> PlayerPawn;
 };
 	
