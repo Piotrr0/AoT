@@ -25,6 +25,22 @@ void UAoTAbilitySystemComponent::AddCharacterAbilities(const TArray<TSubclassOf<
 	}
 }
 
+void UAoTAbilitySystemComponent::AddCharacterPassiveAbilities(const TArray<TSubclassOf<UGameplayAbility>>& PassiveGameplayAbilities)
+{
+	for (const auto& AbilityClass : PassiveGameplayAbilities)
+	{
+		FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(AbilityClass, 1.f);
+		if (const UAoTGameplayAbility* AoTGameplayAbility = Cast<UAoTGameplayAbility>(AbilitySpec.Ability))
+		{
+			for (const auto& InputTag : AoTGameplayAbility->InputTags)
+			{
+				AbilitySpec.DynamicAbilityTags.AddTag(InputTag);
+			}
+			GiveAbilityAndActivateOnce(AbilitySpec);
+		}
+	}
+}
+
 void UAoTAbilitySystemComponent::AbilityInputTagPressed(const FGameplayTag& InputTag)
 {
 	if (!InputTag.IsValid()) return;

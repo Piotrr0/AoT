@@ -25,6 +25,8 @@ public:
 	UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 	void InitDefaultAttributes() const;
 	void InitDefaultAbilities() const;
+	void InitDefaultPassiveAbilities() const;
+
 	UAoTAbilitySystemComponent* GetASC();
 
 	/*Combat Interface*/
@@ -51,6 +53,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly)
 	TArray<TSubclassOf<UGameplayAbility>> DefaultAbilities;
+
+	UPROPERTY(EditDefaultsOnly)
+	TArray<TSubclassOf<UGameplayAbility>> DefaultPassiveAbilities;
 
 private:
 

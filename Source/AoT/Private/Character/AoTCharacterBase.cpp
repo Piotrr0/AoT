@@ -28,6 +28,13 @@ void AAoTCharacterBase::InitDefaultAbilities() const
 	AoTASC->AddCharacterAbilities(DefaultAbilities);
 }
 
+void AAoTCharacterBase::InitDefaultPassiveAbilities() const
+{
+	UAoTAbilitySystemComponent* AoTASC = Cast<UAoTAbilitySystemComponent>(AbilitySystemComponent);
+	check(AoTASC);
+	AoTASC->AddCharacterPassiveAbilities(DefaultPassiveAbilities);
+}
+
 UAoTAbilitySystemComponent* AAoTCharacterBase::GetASC()
 {
 	if (AoTAbilitySystemComponent == nullptr)

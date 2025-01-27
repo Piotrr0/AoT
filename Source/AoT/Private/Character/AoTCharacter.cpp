@@ -86,4 +86,5 @@ void AAoTCharacter::InitAbilityActorInfo()
 	AttributeSet = AoTPlayerState->GetAttributeSet();
 	InitDefaultAttributes();
 	InitDefaultAbilities();
+	InitDefaultPassiveAbilities();
 }
