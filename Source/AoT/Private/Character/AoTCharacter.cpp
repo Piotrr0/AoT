@@ -8,10 +8,14 @@
 #include "AbilitySystem/Abilities/HookAbility.h"
 #include "AbilitySystem/Abilities/BoostAbility.h"
 #include "CableComponent.h"
+#include <Kismet/KismetMathLibrary.h>
+#include "Movement/AoTCharacterMovementComponent.h"
 
 
 AAoTCharacter::AAoTCharacter()
 {
+	PrimaryActorTick.bCanEverTick = true;
+
 	LeftCable = CreateDefaultSubobject<UCableComponent>(FName("LeftCable"));
 	RightCable = CreateDefaultSubobject<UCableComponent>(FName("RightCable"));
 }
@@ -20,6 +24,12 @@ void AAoTCharacter::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
 	InitAbilityActorInfo();
+}
+
+void AAoTCharacter::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+	SetCharacterRotationWhileHooked();
 }
 
 bool AAoTCharacter::GetLeftHookHit_Implementation()
@@ -87,4 +97,31 @@ void AAoTCharacter::InitAbilityActorInfo()
 	InitDefaultAttributes();
 	InitDefaultAbilities();
 	InitDefaultPassiveAbilities();
+}
+
+void AAoTCharacter::SetCharacterRotationWhileHooked()
+{
+	if (GetHookHit_Implementation())
+	{
+		const FVector VelocityDirection = FVector(GetVelocity().X, GetVelocity().Y, 0.f).GetSafeNormal();
+		const FRotator TargetLookRotation = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), GetHookPositionFromAnchors_Implementation());
+
+		const float LateralMovementFactor = UKismetMathLibrary::Dot_VectorVector(VelocityDirection, UKismetMathLibrary::GetRightVector(TargetLookRotation));
+		const float MaxLateralAngle = GetIsBoosting_Implementation() ? MaxCharacterAngleBoosting : MaxCharacterAngle;
+		const float MappedLateralAngle = UKismetMathLibrary::MapRangeClamped(LateralMovementFactor, -1.f, 1.f, -MaxLateralAngle, MaxLateralAngle);
+
+		FRotator LateralTiltRotation = FRotator::ZeroRotator;
+		if (!GetCharacterMovement()->IsMovingOnGround())
+		{
+			LateralTiltRotation = UKismetMathLibrary::RotatorFromAxisAndAngle(GetActorForwardVector(), MappedLateralAngle);
+		}
+
+		const FRotator VelocityBasedRotation = UKismetMathLibrary::MakeRotFromX(GetVelocity());
+		const FRotator BlendedLookRotation = UKismetMathLibrary::RLerp(VelocityBasedRotation, TargetLookRotation, 0.5f, true);
+		const FRotator YawOnlyRotation = FRotator(0.f, BlendedLookRotation.Yaw, 0.f);
+
+		const FRotator CombinedRotation = UKismetMathLibrary::ComposeRotators(YawOnlyRotation, LateralTiltRotation);
+		const FRotator SmoothedRotation = UKismetMathLibrary::RInterpTo(GetActorRotation(), CombinedRotation, GetWorld()->GetDeltaSeconds(), 4.f);
+		SetActorRotation(SmoothedRotation);
+	}
 }

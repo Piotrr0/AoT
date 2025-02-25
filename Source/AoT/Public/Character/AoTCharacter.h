@@ -20,6 +20,7 @@ class AOT_API AAoTCharacter : public AAoTCharacterBase, public IPlayerInterface
 public:
 	AAoTCharacter();
 	virtual void PossessedBy(AController* NewController) override;
+	virtual void Tick(float DeltaTime) override;
 
 	/*PlayerInterface*/
 	virtual bool GetLeftHookHit_Implementation() override;
@@ -33,6 +34,7 @@ public:
 protected:
 
 	void InitAbilityActorInfo() override;
+	void SetCharacterRotationWhileHooked();
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
 	TObjectPtr<UCableComponent> LeftCable;
@@ -42,5 +44,13 @@ protected:
 
 private:
 
+	FRotator CachedHookRotation;
+	float VelocityDotHook;
+
+	UPROPERTY(EditDefaultsOnly)
+	float MaxCharacterAngle = 30.f;
+
+	UPROPERTY(EditDefaultsOnly)
+	float MaxCharacterAngleBoosting = 30.f;
 
 };
