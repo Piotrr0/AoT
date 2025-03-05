@@ -29,7 +29,7 @@ void AAoTCharacter::PossessedBy(AController* NewController)
 void AAoTCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	SetCharacterRotationWhileHooked();
+	CalculateVelocityDotHook();
 }
 
 bool AAoTCharacter::GetLeftHookHit_Implementation()
@@ -104,29 +104,43 @@ void AAoTCharacter::InitAbilityActorInfo()
 	InitDefaultPassiveAbilities();
 }
 
-void AAoTCharacter::SetCharacterRotationWhileHooked()
+FRotator AAoTCharacter::UpdateCharacterRotationWhileHooked()
 {
-	if (GetHookHit_Implementation())
+	const FRotator HookLookAtRotation = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), IPlayerInterface::Execute_GetHookPositionFromAnchors(this));
+
+	const float EffectiveSidewaysAngle = IPlayerInterface::Execute_GetIsBoosting(this) ? MaxCharacterAngleBoosting : MaxCharacterAngle;
+	const float MappedSidewaysAngle = UKismetMathLibrary::MapRangeClamped(VelocityDotHook, -1.f, 1.f, -EffectiveSidewaysAngle, EffectiveSidewaysAngle);
+
+	const FRotator SidewaysRotation = UKismetMathLibrary::RotatorFromAxisAndAngle(GetActorForwardVector(), MappedSidewaysAngle);
+
+	FRotator RotationOffset = FRotator::ZeroRotator;
+	if (!GetCharacterMovement()->IsMovingOnGround())
 	{
-		const FVector VelocityDirection = FVector(GetVelocity().X, GetVelocity().Y, 0.f).GetSafeNormal();
-		const FRotator TargetLookRotation = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), GetHookPositionFromAnchors_Implementation());
-
-		const float LateralMovementFactor = UKismetMathLibrary::Dot_VectorVector(VelocityDirection, UKismetMathLibrary::GetRightVector(TargetLookRotation));
-		const float MaxLateralAngle = GetIsBoosting_Implementation() ? MaxCharacterAngleBoosting : MaxCharacterAngle;
-		const float MappedLateralAngle = UKismetMathLibrary::MapRangeClamped(LateralMovementFactor, -1.f, 1.f, -MaxLateralAngle, MaxLateralAngle);
-
-		FRotator LateralTiltRotation = FRotator::ZeroRotator;
-		if (!GetCharacterMovement()->IsMovingOnGround())
-		{
-			LateralTiltRotation = UKismetMathLibrary::RotatorFromAxisAndAngle(GetActorForwardVector(), MappedLateralAngle);
-		}
-
-		const FRotator VelocityBasedRotation = UKismetMathLibrary::MakeRotFromX(GetVelocity());
-		const FRotator BlendedLookRotation = UKismetMathLibrary::RLerp(VelocityBasedRotation, TargetLookRotation, 0.5f, true);
-		const FRotator YawOnlyRotation = FRotator(0.f, BlendedLookRotation.Yaw, 0.f);
-
-		const FRotator CombinedRotation = UKismetMathLibrary::ComposeRotators(YawOnlyRotation, LateralTiltRotation);
-		const FRotator SmoothedRotation = UKismetMathLibrary::RInterpTo(GetActorRotation(), CombinedRotation, GetWorld()->GetDeltaSeconds(), 4.f);
-		SetActorRotation(SmoothedRotation);
+		RotationOffset = SidewaysRotation;
 	}
+
+	const FRotator BlendedRotation = UKismetMathLibrary::RLerp(UKismetMathLibrary::MakeRotFromX(GetVelocity()), HookLookAtRotation, 0.5f, true);
+	const FRotator YawOnlyRotation = FRotator(0.f, BlendedRotation.Yaw, 0.f);
+
+	const FRotator CombinedRotation = UKismetMathLibrary::ComposeRotators(YawOnlyRotation, RotationOffset);
+	const FRotator InterpolatedRotation = UKismetMathLibrary::RInterpTo(GetActorRotation(), CombinedRotation, GetWorld()->GetDeltaSeconds(), 4.f);
+
+	if (IPlayerInterface::Execute_GetHookHit(this))
+	{
+		HookedDesiredRotation = InterpolatedRotation;
+		SetActorRotation(HookedDesiredRotation);
+
+		return HookLookAtRotation;
+	}
+
+	return HookLookAtRotation;
+}
+
+void AAoTCharacter::CalculateVelocityDotHook()
+{
+	const FVector VelocityXY = FVector(GetVelocity().X, GetVelocity().Y, 0.f).GetSafeNormal(0.00001f);
+	const FRotator CurrentHookRotation = CachedHookRotation;
+	VelocityDotHook = UKismetMathLibrary::Dot_VectorVector(VelocityXY, UKismetMathLibrary::GetRightVector(CurrentHookRotation));
+
+	CachedHookRotation = UpdateCharacterRotationWhileHooked();
 }

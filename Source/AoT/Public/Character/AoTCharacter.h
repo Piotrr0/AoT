@@ -35,7 +35,8 @@ public:
 protected:
 
 	void InitAbilityActorInfo() override;
-	void SetCharacterRotationWhileHooked();
+	FRotator UpdateCharacterRotationWhileHooked();
+	void CalculateVelocityDotHook();
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
 	TObjectPtr<UCableComponent> LeftCable;
@@ -45,6 +46,7 @@ protected:
 
 private:
 
+	FRotator HookedDesiredRotation;
 	FRotator CachedHookRotation;
 	float VelocityDotHook;
 
@@ -53,5 +55,4 @@ private:
 
 	UPROPERTY(EditDefaultsOnly)
 	float MaxCharacterAngleBoosting = 30.f;
-
 };
