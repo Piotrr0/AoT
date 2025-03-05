@@ -30,6 +30,7 @@ public:
 	virtual FVector GetHookPositionFromAnchors_Implementation() override;
 	virtual UCableComponent* GetLeftCable_Implementation() override;
 	virtual UCableComponent* GetRightCable_Implementation() override;
+	virtual void SetOrientRotationToMovement_Implementation(bool bOrientRotationToMovement) override;
 
 protected:
 

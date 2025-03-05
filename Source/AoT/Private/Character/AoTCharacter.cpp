@@ -87,6 +87,11 @@ UCableComponent* AAoTCharacter::GetRightCable_Implementation()
 	return RightCable;
 }
 
+void AAoTCharacter::SetOrientRotationToMovement_Implementation(bool bOrientRotationToMovement)
+{
+	GetCharacterMovement()->bOrientRotationToMovement = bOrientRotationToMovement;
+}
+
 void AAoTCharacter::InitAbilityActorInfo()
 {
 	AAoTPlayerState* AoTPlayerState = Cast<AAoTPlayerState>(GetPlayerState());

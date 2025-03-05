@@ -8,7 +8,6 @@
 #include "HookAbility.generated.h"
 
 class AHookProjectile;
-struct FHookHitParams;
 
 USTRUCT(BlueprintType)
 struct FHookSpawnParams
@@ -69,6 +68,8 @@ protected:
 
 	TArray<FHookHitParams> LeftHookHitParams;
 	TArray<FHookHitParams> RightHookHitParams;
+
+	void CheckNoLongerHooked();
 
 private:
 

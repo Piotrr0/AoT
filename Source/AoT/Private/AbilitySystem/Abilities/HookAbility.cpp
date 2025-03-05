@@ -7,6 +7,7 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "Actor/HookProjectile.h"
 #include "AoTGameplayTags.h"
+#include "Interfaces/PlayerInterface.h"
 
 void UHookAbility::BindCallbacksToDependencies()
 {
@@ -83,6 +84,7 @@ void UHookAbility::ReleaseHook(const FGameplayTag& GearTag)
 		RightHookHitParams.Empty();
 		bRightHookHit = false;
 	}
+	CheckNoLongerHooked();
 }
 
 FHookSpawnParams UHookAbility::CalculateHookSpawnParams(const FGameplayTag& GearTag) const
@@ -113,6 +115,7 @@ void UHookAbility::HandleReceivedHookLocation(const FGameplayTag& GearTag, const
 		bRightHookHit = true;
 		RightHookHitParams.Add(HitParams);
 	}
+	IPlayerInterface::Execute_SetOrientRotationToMovement(GetAvatarActorFromActorInfo(), false);
 }
 
 void UHookAbility::HandleHookReturn(const FGameplayTag& GearTag)
@@ -124,5 +127,14 @@ void UHookAbility::HandleHookReturn(const FGameplayTag& GearTag)
 	else
 	{
 		RightHook = nullptr;
+	}
+}
+
+void UHookAbility::CheckNoLongerHooked()
+{
+	if (!bRightHookHit && !bLeftHookHit)
+	{
+		IPlayerInterface::Execute_UpdateCharacterRotation(GetAvatarActorFromActorInfo());
+		IPlayerInterface::Execute_SetOrientRotationToMovement(GetAvatarActorFromActorInfo(), true);
 	}
 }

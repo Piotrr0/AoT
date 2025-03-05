@@ -45,4 +45,10 @@ public:
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	UCableComponent* GetRightCable();
+
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
+	void UpdateCharacterRotation();
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	void SetOrientRotationToMovement(bool bOrientRotationToMovement);
 };
