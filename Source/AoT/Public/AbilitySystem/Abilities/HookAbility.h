@@ -69,7 +69,7 @@ protected:
 	TArray<FHookHitParams> LeftHookHitParams;
 	TArray<FHookHitParams> RightHookHitParams;
 
-	void CheckNoLongerHooked();
+	bool CheckNoLongerHooked();
 
 private:
 

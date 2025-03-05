@@ -84,7 +84,11 @@ void UHookAbility::ReleaseHook(const FGameplayTag& GearTag)
 		RightHookHitParams.Empty();
 		bRightHookHit = false;
 	}
-	CheckNoLongerHooked();
+
+	if (!CheckNoLongerHooked())
+	{
+		IPlayerInterface::Execute_SetOrientRotationToMovement(GetAvatarActorFromActorInfo(), false);
+	}
 }
 
 FHookSpawnParams UHookAbility::CalculateHookSpawnParams(const FGameplayTag& GearTag) const
@@ -130,11 +134,13 @@ void UHookAbility::HandleHookReturn(const FGameplayTag& GearTag)
 	}
 }
 
-void UHookAbility::CheckNoLongerHooked()
+bool UHookAbility::CheckNoLongerHooked()
 {
 	if (!bRightHookHit && !bLeftHookHit)
 	{
 		IPlayerInterface::Execute_UpdateCharacterRotation(GetAvatarActorFromActorInfo());
 		IPlayerInterface::Execute_SetOrientRotationToMovement(GetAvatarActorFromActorInfo(), true);
+		return true;
 	}
+	return false;
 }

@@ -107,10 +107,8 @@ void AAoTCharacter::InitAbilityActorInfo()
 FRotator AAoTCharacter::UpdateCharacterRotationWhileHooked()
 {
 	const FRotator HookLookAtRotation = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), IPlayerInterface::Execute_GetHookPositionFromAnchors(this));
-
 	const float EffectiveSidewaysAngle = IPlayerInterface::Execute_GetIsBoosting(this) ? MaxCharacterAngleBoosting : MaxCharacterAngle;
 	const float MappedSidewaysAngle = UKismetMathLibrary::MapRangeClamped(VelocityDotHook, -1.f, 1.f, -EffectiveSidewaysAngle, EffectiveSidewaysAngle);
-
 	const FRotator SidewaysRotation = UKismetMathLibrary::RotatorFromAxisAndAngle(GetActorForwardVector(), MappedSidewaysAngle);
 
 	FRotator RotationOffset = FRotator::ZeroRotator;
@@ -121,7 +119,6 @@ FRotator AAoTCharacter::UpdateCharacterRotationWhileHooked()
 
 	const FRotator BlendedRotation = UKismetMathLibrary::RLerp(UKismetMathLibrary::MakeRotFromX(GetVelocity()), HookLookAtRotation, 0.5f, true);
 	const FRotator YawOnlyRotation = FRotator(0.f, BlendedRotation.Yaw, 0.f);
-
 	const FRotator CombinedRotation = UKismetMathLibrary::ComposeRotators(YawOnlyRotation, RotationOffset);
 	const FRotator InterpolatedRotation = UKismetMathLibrary::RInterpTo(GetActorRotation(), CombinedRotation, GetWorld()->GetDeltaSeconds(), 4.f);
 
@@ -129,8 +126,6 @@ FRotator AAoTCharacter::UpdateCharacterRotationWhileHooked()
 	{
 		HookedDesiredRotation = InterpolatedRotation;
 		SetActorRotation(HookedDesiredRotation);
-
-		return HookLookAtRotation;
 	}
 
 	return HookLookAtRotation;
