@@ -11,7 +11,6 @@
 #include "AbilitySystem/Abilities/HookAbility.h"
 #include "AoTGameplayTags.h"
 #include "Interfaces/PlayerInterface.h"
-#include "Interfaces/CombatInterface.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
 
@@ -119,9 +118,9 @@ void AAoTPlayerController::RightMouseButtonReleased()
 
 void AAoTPlayerController::JumpOrBoostButtonPressed()
 {
-	if (GetPawn<APawn>()->Implements<UPlayerInterface>() && GetPawn<APawn>()->Implements<UCombatInterface>())
+	if (GetPawn<APawn>()->Implements<UPlayerInterface>())
 	{
-		if (!ICombatInterface::Execute_GetMovement(GetPawn<APawn>())->IsMovingOnGround() && IPlayerInterface::Execute_GetHookHit(GetPawn<APawn>()))
+		if (!GetPawn()->GetMovementComponent()->IsMovingOnGround() && IPlayerInterface::Execute_GetHookHit(GetPawn<APawn>()))
 		{
  			GetASC()->TryActivateAbilitiesByTag(FAoTGameplayTags::Get().Abilities_Boost.GetSingleTagContainer());
 		}
