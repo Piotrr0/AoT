@@ -9,26 +9,6 @@
 #include "AoTGameplayTags.h"
 #include "Interfaces/PlayerInterface.h"
 
-void UHookAbility::BindCallbacksToDependencies()
-{
-	if (LeftHook && !LeftHook->HookLocationReceivedDelegate.IsBound())
-	{
-		LeftHook->HookLocationReceivedDelegate.AddUObject(this, &UHookAbility::HandleReceivedHookLocation);
-	}
-	if (RightHook && !RightHook->HookLocationReceivedDelegate.IsBound())
-	{
-		RightHook->HookLocationReceivedDelegate.AddUObject(this, &UHookAbility::HandleReceivedHookLocation);
-	}
-	if (LeftHook && !LeftHook->HookRetunedToOwnerDelegate.IsBound())
-	{
-		LeftHook->HookRetunedToOwnerDelegate.AddDynamic(this, &UHookAbility::HandleHookReturn);
-	}
-	if (RightHook && !RightHook->HookRetunedToOwnerDelegate.IsBound())
-	{
-		RightHook->HookRetunedToOwnerDelegate.AddDynamic(this, &UHookAbility::HandleHookReturn);
-	}
-}
-
 FVector UHookAbility::GetHookPositionFromAnchors() const
 {
 	if (bRightHookHit && bLeftHookHit)
@@ -60,14 +40,17 @@ void UHookAbility::SpawnHookProjectile(const FVector& SpawnLocation, const FRota
 		if (GearTag.MatchesTagExact(FAoTGameplayTags::Get().CombatSocket_LeftGear))
 		{
 			LeftHook = HookProjectile;
+			LeftHook->HookLocationReceivedDelegate.AddUObject(this, &UHookAbility::HandleReceivedHookLocation);
+			LeftHook->HookRetunedToOwnerDelegate.AddDynamic(this, &UHookAbility::HandleHookReturn);
 		}
 		else
 		{
 			RightHook = HookProjectile;
+			RightHook->HookLocationReceivedDelegate.AddUObject(this, &UHookAbility::HandleReceivedHookLocation);
+			RightHook->HookRetunedToOwnerDelegate.AddDynamic(this, &UHookAbility::HandleHookReturn);
 		}
 	}
 	UGameplayStatics::FinishSpawningActor(Projectile, SpawnTransform);
-	BindCallbacksToDependencies();
 }
 
 void UHookAbility::ReleaseHook(const FGameplayTag& GearTag)
@@ -75,14 +58,14 @@ void UHookAbility::ReleaseHook(const FGameplayTag& GearTag)
 	if (GearTag.MatchesTagExact(FAoTGameplayTags::Get().CombatSocket_LeftGear))
 	{
 		LeftHook->ReturnToOwner();
-		LeftHookHitParams.Empty();
 		bLeftHookHit = false;
+		LeftHookHitParams.Empty();
 	}
 	else
 	{
 		RightHook->ReturnToOwner();
-		RightHookHitParams.Empty();
 		bRightHookHit = false;
+		RightHookHitParams.Empty();
 	}
 
 	if (!CheckNoLongerHooked())

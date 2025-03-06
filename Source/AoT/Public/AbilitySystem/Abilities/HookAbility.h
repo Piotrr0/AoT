@@ -42,9 +42,6 @@ public:
 
 	UPROPERTY(BlueprintReadWrite)
 	bool bRightHookHit;
-
-	void BindCallbacksToDependencies();
-
 	FVector GetHookPositionFromAnchors() const;
 
 protected:
