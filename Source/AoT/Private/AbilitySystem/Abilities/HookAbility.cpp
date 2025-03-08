@@ -41,12 +41,14 @@ void UHookAbility::SpawnHookProjectile(const FVector& SpawnLocation, const FRota
 		{
 			LeftHook = HookProjectile;
 			LeftHook->HookLocationReceivedDelegate.AddUObject(this, &UHookAbility::HandleReceivedHookLocation);
+			LeftHook->HookFreeLocationDelegate.AddUObject(this, &UHookAbility::HandleFreedLastHookLocation);
 			LeftHook->HookRetunedToOwnerDelegate.AddDynamic(this, &UHookAbility::HandleHookReturn);
 		}
 		else
 		{
 			RightHook = HookProjectile;
 			RightHook->HookLocationReceivedDelegate.AddUObject(this, &UHookAbility::HandleReceivedHookLocation);
+			RightHook->HookFreeLocationDelegate.AddUObject(this, &UHookAbility::HandleFreedLastHookLocation);
 			RightHook->HookRetunedToOwnerDelegate.AddDynamic(this, &UHookAbility::HandleHookReturn);
 		}
 	}
@@ -114,6 +116,18 @@ void UHookAbility::HandleHookReturn(const FGameplayTag& GearTag)
 	else
 	{
 		RightHook = nullptr;
+	}
+}
+
+void UHookAbility::HandleFreedLastHookLocation(const FGameplayTag& GearTag)
+{
+	if (GearTag.MatchesTagExact(FAoTGameplayTags::Get().CombatSocket_LeftGear))
+	{
+		LeftHookHitParams.Pop();
+	}
+	else
+	{
+		RightHookHitParams.Pop();
 	}
 }
 

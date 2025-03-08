@@ -69,7 +69,7 @@ void AHookProjectile::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, 
 
 void AHookProjectile::DetectRopeCollision()
 {
-	if (!HitData.IsEmpty() && GetPlayerPawn()->Implements<UCombatInterface>())
+	if (!bReturning && !HitData.IsEmpty() && GetPlayerPawn()->Implements<UCombatInterface>())
 	{
 		const FVector LastHitLocation = HitData.Last().Impact;
 		const FVector SocketLocation = ICombatInterface::Execute_GetCombatSocketLocation(GetPlayerPawn(), FireSocket);
@@ -98,7 +98,7 @@ void AHookProjectile::DetectRopeCollision()
 
 void AHookProjectile::NoLongerRopeBlock()
 {
-	if (HitData.Num() >= 2)
+	if (!bReturning && HitData.Num() >= 2)
 	{
 		const FVector SocketLocation = ICombatInterface::Execute_GetCombatSocketLocation(GetPlayerPawn(), FireSocket);
 		const FVector End = UKismetMathLibrary::VLerp(SocketLocation, HitData[HitData.Num() - 2].Impact, 0.99f);
@@ -107,6 +107,7 @@ void AHookProjectile::NoLongerRopeBlock()
 		if (!HitResult.bBlockingHit)
 		{
 			HitData.Pop();
+			HookFreeLocationDelegate.Broadcast(FireSocket);
 		}
 	}
 }

@@ -59,6 +59,8 @@ protected:
 	void HandleReceivedHookLocation(const FGameplayTag& GearTag, const FHookHitParams& HitParams);
 	UFUNCTION()
 	void HandleHookReturn(const FGameplayTag& GearTag);
+	UFUNCTION()
+	void HandleFreedLastHookLocation(const FGameplayTag& GearTag);
 		
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<AHookProjectile> HookClass;

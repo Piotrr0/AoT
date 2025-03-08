@@ -25,6 +25,8 @@ struct FHookHitParams
 };
 
 DECLARE_MULTICAST_DELEGATE_TwoParams(FHookLocationReceived, const FGameplayTag&, const FHookHitParams&);
+DECLARE_MULTICAST_DELEGATE_OneParam(FHookFreeLocation, const FGameplayTag&);
+
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FHookRetunedToOwner, const FGameplayTag&, FireSocket);
 
 /**
@@ -50,6 +52,7 @@ public:
 	void PrematureReturn();
 
 	FHookLocationReceived HookLocationReceivedDelegate;
+	FHookFreeLocation HookFreeLocationDelegate;
 
 	UPROPERTY(BlueprintCallable)
 	FHookRetunedToOwner HookRetunedToOwnerDelegate;
