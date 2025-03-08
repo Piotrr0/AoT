@@ -19,6 +19,7 @@ void AHookProjectile::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	DetectRopeCollision();
+	NoLongerRopeBlock();
 }
 
 void AHookProjectile::PrematureReturn()
@@ -91,6 +92,21 @@ void AHookProjectile::DetectRopeCollision()
 
 			HitData.Add(HookHitParams);
 			HookLocationReceivedDelegate.Broadcast(FireSocket, HookHitParams);
+		}
+	}
+}
+
+void AHookProjectile::NoLongerRopeBlock()
+{
+	if (HitData.Num() >= 2)
+	{
+		const FVector SocketLocation = ICombatInterface::Execute_GetCombatSocketLocation(GetPlayerPawn(), FireSocket);
+		const FVector End = UKismetMathLibrary::VLerp(SocketLocation, HitData[HitData.Num() - 2].Impact, 0.99f);
+		FHitResult HitResult;
+		GetWorld()->LineTraceSingleByChannel(HitResult, SocketLocation, End, ECollisionChannel::ECC_Visibility);
+		if (!HitResult.bBlockingHit)
+		{
+			HitData.Pop();
 		}
 	}
 }
