@@ -9,6 +9,7 @@
 #include "Interfaces/CombatInterface.h"
 #include "CableComponent.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Actor/Rope.h"
 
 AHookProjectile::AHookProjectile()
 {
@@ -20,6 +21,7 @@ void AHookProjectile::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 	DetectRopeCollision();
 	NoLongerRopeBlock();
+	UpdateRope();
 }
 
 void AHookProjectile::PrematureReturn()
@@ -30,22 +32,39 @@ void AHookProjectile::PrematureReturn()
 	}
 }
 
+void AHookProjectile::DestroyRopeParts()
+{
+	for (ARope* Rope : RopeParts)
+	{
+		Rope->Destroy();
+	}
+	RopeParts.Empty();
+}
+
 void AHookProjectile::BeginPlay()
 {
 	Super::BeginPlay();
 	if (GetPlayerPawn()->Implements<UPlayerInterface>())
 	{
+		LeftPlayerCable = IPlayerInterface::Execute_GetLeftCable(GetPlayerPawn());
+		RightPlayerCable = IPlayerInterface::Execute_GetRightCable(GetPlayerPawn());
+
 		if (FireSocket.MatchesTagExact(FAoTGameplayTags::Get().CombatSocket_LeftGear))
 		{
-			UCableComponent* LeftCable = IPlayerInterface::Execute_GetLeftCable(GetPlayerPawn());
-			LeftCable->SetVisibility(true);
-			LeftCable->SetAttachEndTo(this, FName(""));
+			SetRopeVisiblity(LeftPlayerCable, true);
+			if (LeftPlayerCable)
+			{
+				LeftPlayerCable->SetAttachEndTo(this, FName(""));
+			}
 		}
-		else if (FireSocket.MatchesTagExact(FAoTGameplayTags::Get().CombatSocket_RightGear))
+
+		if (FireSocket.MatchesTagExact(FAoTGameplayTags::Get().CombatSocket_RightGear))
 		{
-			UCableComponent* RightCable = IPlayerInterface::Execute_GetRightCable(GetPlayerPawn());
-			RightCable->SetVisibility(true);
-			RightCable->SetAttachEndTo(this, FName(""));
+			SetRopeVisiblity(RightPlayerCable, true);
+			if (RightPlayerCable)
+			{
+				RightPlayerCable->SetAttachEndTo(this, FName(""));
+			}
 		}
 	}
 }
@@ -57,12 +76,23 @@ void AHookProjectile::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, 
 	{
 		bLocationFound = true;
 
+		if (FireSocket.MatchesTagExact(FAoTGameplayTags::Get().CombatSocket_LeftGear))
+		{
+			SetRopeVisiblity(LeftPlayerCable, false);
+		}
+
+		if (FireSocket.MatchesTagExact(FAoTGameplayTags::Get().CombatSocket_RightGear))
+		{
+			SetRopeVisiblity(RightPlayerCable, false);
+		}
+
 		FHookHitParams HitParams;
 		HitParams.Impact = SweepResult.ImpactPoint;
 		HitParams.Normal = SweepResult.ImpactNormal;
 		HitParams.Tangent = FVector::ZeroVector;
 
 		HitData.Add(HitParams);
+		HandleNewRopeBlock();
 		HookLocationReceivedDelegate.Broadcast(FireSocket, HitParams);
 	}
 }
@@ -91,6 +121,7 @@ void AHookProjectile::DetectRopeCollision()
 			HookHitParams.Tangent = FVector::CrossProduct(HitResult.ImpactNormal, ReverseHitResult.ImpactNormal);
 
 			HitData.Add(HookHitParams);
+			HandleNewRopeBlock();
 			HookLocationReceivedDelegate.Broadcast(FireSocket, HookHitParams);
 		}
 	}
@@ -107,7 +138,54 @@ void AHookProjectile::NoLongerRopeBlock()
 		if (!HitResult.bBlockingHit)
 		{
 			HitData.Pop();
+			HandleFreedRopeBlock();
 			HookFreeLocationDelegate.Broadcast(FireSocket);
 		}
 	}
+}
+
+void AHookProjectile::HandleNewRopeBlock()
+{
+	const FTransform RopeSpawnTransform = FTransform();
+	AActor* RopeActor = UGameplayStatics::BeginDeferredActorSpawnFromClass(GetWorld(), RopeClass, RopeSpawnTransform);
+	ARope* Rope = Cast<ARope>(RopeActor);
+	RopeParts.AddUnique(Rope);
+	UGameplayStatics::FinishSpawningActor(RopeActor, RopeSpawnTransform);
+}
+
+void AHookProjectile::HandleFreedRopeBlock()
+{
+	if (RopeParts.IsEmpty()) return;
+
+	RopeParts.Last()->Destroy();
+	RopeParts.RemoveAt(RopeParts.Num() - 1);
+}
+
+void AHookProjectile::UpdateRope()
+{
+	if (bLocationFound)
+	{
+		const FVector SocketLocation = ICombatInterface::Execute_GetCombatSocketLocation(GetPlayerPawn(), FireSocket);
+
+		TArray<FVector> HitLocations;
+		for (const FHookHitParams& HitParam : HitData)
+		{
+			HitLocations.Add(HitParam.Impact);
+		}
+		HitLocations.Add(SocketLocation);
+
+		for (int32 i = 0; i < HitLocations.Num() - 1; i++)
+		{
+			if (RopeParts[i])
+			{
+				RopeParts[i]->SetRopeTransform(HitLocations[i + 1], HitLocations[i]);
+			}
+		}
+	}
+}
+
+void AHookProjectile::SetRopeVisiblity(UCableComponent* Cable, bool bVisible)
+{
+	if(Cable)
+		Cable->SetVisibility(bVisible);
 }

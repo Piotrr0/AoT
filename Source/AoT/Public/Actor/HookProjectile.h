@@ -7,7 +7,8 @@
 #include "GameplayTagContainer.h"
 #include "HookProjectile.generated.h"
 
-class UHookAbility;
+class ARope;
+class UCableComponent;
 
 USTRUCT(BlueprintType)
 struct FHookHitParams
@@ -57,12 +58,20 @@ public:
 	UPROPERTY(BlueprintCallable)
 	FHookRetunedToOwner HookRetunedToOwnerDelegate;
 
+	UFUNCTION(BlueprintCallable)
+	void DestroyRopeParts();
+
 protected:
 
 	virtual void BeginPlay() override;
 	virtual void OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) override;
+
 	void DetectRopeCollision();
 	void NoLongerRopeBlock();
+
+	void HandleNewRopeBlock();
+	void HandleFreedRopeBlock();
+	void UpdateRope();
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	float HookLifeTime = 1.5f;
@@ -75,4 +84,17 @@ protected:
 
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere);
 	TArray<FHookHitParams> HitData;
+
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<AActor> RopeClass;
+
+	UPROPERTY(VisibleAnywhere)
+	TArray<ARope*> RopeParts;
+
+private:
+
+	TObjectPtr<UCableComponent> LeftPlayerCable;
+	TObjectPtr<UCableComponent> RightPlayerCable;
+
+	void SetRopeVisiblity(UCableComponent* Cable, bool bVisible);
 };

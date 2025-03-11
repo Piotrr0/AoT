@@ -14,7 +14,7 @@ void ARope::SetRopeTransform(const FVector& StartLocation, const FVector& EndLoc
 	const float Distance = FVector::Distance(StartLocation, EndLocation);
 	const FRotator Rotation = UKismetMathLibrary::FindLookAtRotation(StartLocation, EndLocation);
 	SetActorLocation(StartLocation);
-	SetActorScale3D(FVector(Distance/100.f, 0.1f, 0.1f));
+	SetActorScale3D(FVector((Distance/200.f), 0.1f, 0.1f));
 	SetActorRotation(Rotation);
 }
 
