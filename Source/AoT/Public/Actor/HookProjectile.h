@@ -82,19 +82,23 @@ protected:
 	UPROPERTY(BlueprintReadWrite)
 	bool bReturning = false;
 
-	UPROPERTY(BlueprintReadOnly, VisibleAnywhere);
+	UPROPERTY(BlueprintReadOnly);
 	TArray<FHookHitParams> HitData;
 
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<AActor> RopeClass;
 
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY()
 	TArray<ARope*> RopeParts;
 
 private:
 
+	UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess = true))
 	TObjectPtr<UCableComponent> LeftPlayerCable;
+	
+	UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess = true))
 	TObjectPtr<UCableComponent> RightPlayerCable;
 
+	UFUNCTION(BlueprintCallable)
 	void SetRopeVisiblity(UCableComponent* Cable, bool bVisible);
 };
