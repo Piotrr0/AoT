@@ -16,6 +16,19 @@ AAoTCharacter::AAoTCharacter()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
+	bUseControllerRotationPitch = false;
+	bUseControllerRotationYaw = false;
+	bUseControllerRotationRoll = false;
+
+	GetCharacterMovement()->bOrientRotationToMovement = true;	
+	GetCharacterMovement()->RotationRate = FRotator(0.0f, 500.0f, 0.0f);
+
+	GetCharacterMovement()->JumpZVelocity = 400.f;
+	GetCharacterMovement()->AirControl = 0.3f;
+	GetCharacterMovement()->MaxWalkSpeed = 500.f;
+	GetCharacterMovement()->BrakingDecelerationWalking = 2048.f;
+
+
 	LeftCable = CreateDefaultSubobject<UCableComponent>(FName("LeftCable"));
 	RightCable = CreateDefaultSubobject<UCableComponent>(FName("RightCable"));
 }
