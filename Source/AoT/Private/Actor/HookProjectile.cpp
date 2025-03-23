@@ -19,8 +19,7 @@ AHookProjectile::AHookProjectile()
 void AHookProjectile::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	DetectRopeCollision();
-	NoLongerRopeBlock();
+	CheckForCollisions();
 	UpdateRope();
 }
 
@@ -49,30 +48,15 @@ void AHookProjectile::BeginPlay()
 		LeftPlayerCable = IPlayerInterface::Execute_GetLeftCable(GetPlayerPawn());
 		RightPlayerCable = IPlayerInterface::Execute_GetRightCable(GetPlayerPawn());
 
-		if (FireSocket.MatchesTagExact(FAoTGameplayTags::Get().CombatSocket_LeftGear))
-		{
-			SetRopeVisiblity(LeftPlayerCable, true);
-			if (LeftPlayerCable)
-			{
-				LeftPlayerCable->SetAttachEndTo(this, FName(""));
-			}
-		}
-
-		if (FireSocket.MatchesTagExact(FAoTGameplayTags::Get().CombatSocket_RightGear))
-		{
-			SetRopeVisiblity(RightPlayerCable, true);
-			if (RightPlayerCable)
-			{
-				RightPlayerCable->SetAttachEndTo(this, FName(""));
-			}
-		}
+		InitializeCable(LeftPlayerCable, FAoTGameplayTags::Get().CombatSocket_LeftGear);
+		InitializeCable(RightPlayerCable, FAoTGameplayTags::Get().CombatSocket_RightGear);
 	}
 }
 
 void AHookProjectile::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	Super::OnSphereOverlap(OverlappedComponent, OtherActor, OtherComp, OtherBodyIndex, bFromSweep, SweepResult);
-	if (!bLocationFound && OtherActor && !OtherActor->Implements<UPlayerInterface>())
+	if (!bLocationFound && !bReturning && OtherActor && !OtherActor->Implements<UPlayerInterface>())
 	{
 		bLocationFound = true;
 
@@ -97,7 +81,7 @@ void AHookProjectile::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, 
 	}
 }
 
-void AHookProjectile::DetectRopeCollision()
+void AHookProjectile::CheckRopeCollision()
 {
 	if (!bReturning && !HitData.IsEmpty() && GetPlayerPawn()->Implements<UCombatInterface>())
 	{
@@ -127,7 +111,7 @@ void AHookProjectile::DetectRopeCollision()
 	}
 }
 
-void AHookProjectile::NoLongerRopeBlock()
+void AHookProjectile::CheckNoLongerRopeBlock()
 {
 	if (!bReturning && HitData.Num() >= 2)
 	{
@@ -141,6 +125,15 @@ void AHookProjectile::NoLongerRopeBlock()
 			HandleFreedRopeBlock();
 			HookFreeLocationDelegate.Broadcast(FireSocket);
 		}
+	}
+}
+
+void AHookProjectile::CheckForCollisions()
+{
+	if (bLocationFound)
+	{
+		CheckRopeCollision();
+		CheckNoLongerRopeBlock();
 	}
 }
 
@@ -188,4 +181,16 @@ void AHookProjectile::SetRopeVisiblity(UCableComponent* Cable, bool bVisible)
 {
 	if(Cable)
 		Cable->SetVisibility(bVisible);
+}
+
+void AHookProjectile::InitializeCable(UCableComponent* Cable, const FGameplayTag& GearTag)
+{
+	if (FireSocket.MatchesTagExact(GearTag))
+	{
+		SetRopeVisiblity(Cable, true);
+		if (Cable)
+		{
+			Cable->SetAttachEndTo(this, FName(""));
+		}
+	}
 }

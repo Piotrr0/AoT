@@ -66,8 +66,9 @@ protected:
 	virtual void BeginPlay() override;
 	virtual void OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) override;
 
-	void DetectRopeCollision();
-	void NoLongerRopeBlock();
+	void CheckRopeCollision();
+	void CheckNoLongerRopeBlock();
+	void CheckForCollisions();
 
 	void HandleNewRopeBlock();
 	void HandleFreedRopeBlock();
@@ -101,4 +102,6 @@ private:
 
 	UFUNCTION(BlueprintCallable)
 	void SetRopeVisiblity(UCableComponent* Cable, bool bVisible);
+
+	void InitializeCable(UCableComponent* Cable, const FGameplayTag& GearTag);
 };
