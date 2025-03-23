@@ -10,6 +10,8 @@
 #include "CableComponent.h"
 #include <Kismet/KismetMathLibrary.h>
 #include "Movement/AoTCharacterMovementComponent.h"
+#include "Camera/AoTSpringArmComponent.h"
+#include "Camera/AoTCameraComponent.h"
 
 
 AAoTCharacter::AAoTCharacter()
@@ -28,6 +30,13 @@ AAoTCharacter::AAoTCharacter()
 	GetCharacterMovement()->MaxWalkSpeed = 500.f;
 	GetCharacterMovement()->BrakingDecelerationWalking = 2048.f;
 
+	CameraBoom = CreateDefaultSubobject<UAoTSpringArmComponent>(FName("CameraBoom"));
+	CameraBoom->SetupAttachment(RootComponent);
+	CameraBoom->TargetArmLength = 350.f;
+	CameraBoom->bUsePawnControlRotation = true;
+
+	FollowCamera = CreateDefaultSubobject<UAoTCameraComponent>(FName("FollowCamera"));
+	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
 
 	LeftCable = CreateDefaultSubobject<UCableComponent>(FName("LeftCable"));
 	RightCable = CreateDefaultSubobject<UCableComponent>(FName("RightCable"));

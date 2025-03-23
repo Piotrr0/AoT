@@ -9,6 +9,8 @@
 #include "AoTCharacter.generated.h"
 
 class UCableComponent;
+class UAoTSpringArmComponent;
+class UAoTCameraComponent;
 
 /**
  * 
@@ -43,6 +45,12 @@ protected:
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
 	TObjectPtr<UCableComponent> RightCable;
+
+	UPROPERTY(BlueprintReadOnly, EditAnywhere)
+	TObjectPtr<UAoTSpringArmComponent> CameraBoom;
+
+	UPROPERTY(BlueprintReadOnly, EditAnywhere)
+	TObjectPtr<UAoTCameraComponent> FollowCamera;
 
 private:
 
