@@ -60,18 +60,15 @@ void AHookProjectile::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, 
 	{
 		bLocationFound = true;
 
-		if (FireSocket.MatchesTagExact(FAoTGameplayTags::Get().CombatSocket_LeftGear))
-		{
-			SetRopeVisiblity(LeftPlayerCable, false);
-		}
+		HideRopeForGearSocket(FAoTGameplayTags::Get().CombatSocket_LeftGear);
+		HideRopeForGearSocket(FAoTGameplayTags::Get().CombatSocket_RightGear);
 
-		if (FireSocket.MatchesTagExact(FAoTGameplayTags::Get().CombatSocket_RightGear))
-		{
-			SetRopeVisiblity(RightPlayerCable, false);
-		}
+		const FVector BackwardVector = GetActorForwardVector() * -1.f;
+		const FVector AdjustedActorLocation = (SweepResult.ImpactNormal * WallOffset) + SweepResult.ImpactPoint + BackwardVector;
+		SetActorLocation(AdjustedActorLocation);
 
 		FHookHitParams HitParams;
-		HitParams.Impact = SweepResult.ImpactPoint;
+		HitParams.Impact = AdjustedActorLocation;
 		HitParams.Normal = SweepResult.ImpactNormal;
 		HitParams.Tangent = FVector::ZeroVector;
 
@@ -193,4 +190,22 @@ void AHookProjectile::InitializeCable(UCableComponent* Cable, const FGameplayTag
 			Cable->SetAttachEndTo(this, FName(""));
 		}
 	}
+}
+
+UCableComponent* AHookProjectile::FindCableForTag(const FGameplayTag& GearTag)
+{
+	if (GearTag.MatchesTagExact(FAoTGameplayTags::Get().CombatSocket_LeftGear))
+	{
+		return LeftPlayerCable;
+	}
+	else if (GearTag.MatchesTagExact(FAoTGameplayTags::Get().CombatSocket_RightGear))
+	{
+		return RightPlayerCable;
+	}
+	return nullptr;
+}
+
+void AHookProjectile::HideRopeForGearSocket(const FGameplayTag& GearTag)
+{
+	SetRopeVisiblity(FindCableForTag(GearTag), false);
 }

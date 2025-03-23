@@ -78,10 +78,13 @@ protected:
 	float HookLifeTime = 1.5f;
 
 	UPROPERTY(BlueprintReadWrite) /* Set to false in ReturnToOwner event blueprint */
-	bool bLocationFound = false; /* Not set to false on hook release */
+	bool bLocationFound = false;
 
 	UPROPERTY(BlueprintReadWrite)
 	bool bReturning = false;
+
+	UPROPERTY(EditDefaultsOnly)
+	float WallOffset = 5.f;
 
 	UPROPERTY(BlueprintReadOnly);
 	TArray<FHookHitParams> HitData;
@@ -104,4 +107,6 @@ private:
 	void SetRopeVisiblity(UCableComponent* Cable, bool bVisible);
 
 	void InitializeCable(UCableComponent* Cable, const FGameplayTag& GearTag);
+	UCableComponent* FindCableForTag(const FGameplayTag& GearTag);
+	void HideRopeForGearSocket(const FGameplayTag& GearTag);
 };
